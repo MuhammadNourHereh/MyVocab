@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.nourtech.wordpress.myvocab.main.WordViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".main.MainActivity">
+
+        <Button
+            android:id="@+id/button_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show"
+            app:layout_constraintBottom_toBottomOf="@+id/button_previous"
+            app:layout_constraintEnd_toStartOf="@+id/button_next"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_previous"
+            app:layout_constraintTop_toTopOf="@+id/button_previous" />
+
+        <Button
+            android:id="@+id/button_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/previous"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_show"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.85" />
+
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next"
+            app:layout_constraintBottom_toBottomOf="@+id/button_show"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_show"
+            app:layout_constraintTop_toTopOf="@+id/button_show"
+            app:layout_constraintVertical_bias="0.85" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/button_show"
+            app:layout_constraintEnd_toEndOf="@+id/button_next"
+            app:layout_constraintStart_toStartOf="@+id/button_previous"
+            app:layout_constraintTop_toBottomOf="@+id/checkBox_memorized"
+            app:layout_constraintVertical_bias="0.19">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffe6e6"
+                android:text="@{viewModel.word.lang1}" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffe6e6"
+                android:text="@{viewModel.word.lang2}" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/checkBox_memorized"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/memorized"
+            android:checked="@{viewModel.word.memorized}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/button_previous"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

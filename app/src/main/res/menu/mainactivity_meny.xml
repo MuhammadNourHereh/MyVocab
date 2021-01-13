@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItem_show"
+        android:checkable="true"
+        android:title="@string/show_memorized_word" />
+    <item
+        android:id="@+id/menuItem_add"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="@string/add" />
+    <item
+        android:id="@+id/menuItem_list"
+        android:title="@string/list" />
+    <item
+        android:id="@+id/menuItem_shuffle"
+        android:title="@string/shuffle" />
+    <item
+        android:id="@+id/menuItem_clear"
+        android:title="@string/clear" />
+    <item
+        android:id="@+id/menuItem_exit"
+        android:title="@string/exit" />
+</menu>
