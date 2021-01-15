@@ -1,0 +1,715 @@
+Index: app/src/main/res/layout/activity_list.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<layout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <androidx.constraintlayout.widget.ConstraintLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        tools:context=\".list.ListActivity\"\r\n        android:id=\"@+id/coordinatorLayout\">\r\n\r\n        <com.google.android.material.appbar.AppBarLayout\r\n            android:layout_width=\"0dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:theme=\"@style/AppTheme.AppBarOverlay\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"parent\"\r\n            tools:layout_conversion_absoluteHeight=\"56dp\"\r\n            tools:layout_conversion_absoluteWidth=\"411dp\">\r\n\r\n        </com.google.android.material.appbar.AppBarLayout>\r\n\r\n\r\n        <androidx.appcompat.widget.Toolbar\r\n            android:id=\"@+id/toolbar\"\r\n            android:layout_width=\"0dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:background=\"?attr/colorPrimary\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"parent\"\r\n            app:popupTheme=\"@style/AppTheme.PopupOverlay\"\r\n            tools:layout_conversion_absoluteHeight=\"56dp\"\r\n            tools:layout_conversion_absoluteWidth=\"411dp\" />\r\n\r\n        <androidx.recyclerview.widget.RecyclerView\r\n            android:id=\"@+id/recycler_view_words\"\r\n            android:layout_width=\"0dp\"\r\n            android:layout_height=\"0dp\"\r\n            android:layout_marginBottom=\"8dp\"\r\n            app:layout_anchorGravity=\"center\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toBottomOf=\"@+id/toolbar\"\r\n            tools:layout_conversion_absoluteHeight=\"0dp\"\r\n            tools:layout_conversion_absoluteWidth=\"0dp\" />\r\n\r\n        <com.google.android.material.floatingactionbutton.FloatingActionButton\r\n            android:id=\"@+id/fab\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginEnd=\"16dp\"\r\n            android:layout_marginRight=\"16dp\"\r\n            android:layout_marginBottom=\"16dp\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:srcCompat=\"@android:drawable/ic_menu_add\"\r\n            tools:layout_conversion_absoluteHeight=\"56dp\"\r\n            tools:layout_conversion_absoluteWidth=\"56dp\" />\r\n\r\n    </androidx.constraintlayout.widget.ConstraintLayout>\r\n</layout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_list.xml	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/res/layout/activity_list.xml	(date 1610563260273)
+@@ -55,7 +55,7 @@
+             android:layout_marginBottom="16dp"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+-            app:srcCompat="@android:drawable/ic_menu_add"
++            app:srcCompat="@android:drawable/ic_input_add"
+             tools:layout_conversion_absoluteHeight="56dp"
+             tools:layout_conversion_absoluteWidth="56dp" />
+ 
+Index: app/src/main/java/com/nourtech/wordpress/myvocab/add/AddDialog.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.nourtech.wordpress.myvocab.list.add\r\n\r\nimport android.app.AlertDialog\r\nimport android.app.Dialog\r\nimport android.os.Build\r\nimport android.os.Bundle\r\nimport android.view.LayoutInflater\r\nimport androidx.annotation.RequiresApi\r\nimport androidx.fragment.app.DialogFragment\r\nimport com.nourtech.wordpress.myvocab.databinding.DialogAddBinding\r\nimport com.nourtech.wordpress.myvocab.db.WordEntity\r\nimport com.nourtech.wordpress.myvocab.db.WordsDatabase\r\nimport kotlinx.coroutines.*\r\n\r\n\r\nclass AddDialog : DialogFragment() {\r\n    lateinit var binding: DialogAddBinding\r\n\r\n    @InternalCoroutinesApi\r\n    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)\r\n    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {\r\n        super.onCreateDialog(savedInstanceState)\r\n        binding = DialogAddBinding.inflate(LayoutInflater.from(context))\r\n        val builder = AlertDialog.Builder(context)\r\n        builder.setView(binding.root)\r\n        GlobalScope.launch {\r\n            initListeners()\r\n        }\r\n\r\n        return builder.create()\r\n    }\r\n\r\n    @InternalCoroutinesApi\r\n    private suspend fun initListeners() {\r\n        binding.buttonAdd.setOnClickListener {\r\n            add()\r\n        }\r\n        binding.buttonCancel.setOnClickListener {\r\n            dismiss()\r\n        }\r\n        binding.buttonOk.setOnClickListener {\r\n            add()\r\n            dismiss()\r\n        }\r\n    }\r\n\r\n    @InternalCoroutinesApi\r\n     fun add() {\r\n        val job = Job()\r\n        val scope = CoroutineScope(Dispatchers.IO + job)\r\n        scope.launch {\r\n            WordsDatabase.getInstance(requireContext()).dao\r\n                .add(\r\n                    WordEntity(\r\n                        0,\r\n                        binding.editTextFirstLanguage.text.toString(),\r\n                        binding.editTextSecondLanguage.text.toString(),\r\n                        false\r\n                    )\r\n                )\r\n        }\r\n\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/nourtech/wordpress/myvocab/add/AddDialog.kt	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/java/com/nourtech/wordpress/myvocab/add/AddDialog.kt	(date 1610563857209)
+@@ -1,4 +1,4 @@
+-package com.nourtech.wordpress.myvocab.list.add
++package com.nourtech.wordpress.myvocab.add
+ 
+ import android.app.AlertDialog
+ import android.app.Dialog
+@@ -14,7 +14,7 @@
+ 
+ 
+ class AddDialog : DialogFragment() {
+-    lateinit var binding: DialogAddBinding
++    private lateinit var binding: DialogAddBinding
+ 
+     @InternalCoroutinesApi
+     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+@@ -31,7 +31,7 @@
+     }
+ 
+     @InternalCoroutinesApi
+-    private suspend fun initListeners() {
++    private fun initListeners() {
+         binding.buttonAdd.setOnClickListener {
+             add()
+         }
+@@ -45,19 +45,18 @@
+     }
+ 
+     @InternalCoroutinesApi
+-     fun add() {
++    fun add() {
++        val s1 = binding.editTextFirstLanguage.text.toString()
++        val s2 = binding.editTextSecondLanguage.text.toString()
+         val job = Job()
+         val scope = CoroutineScope(Dispatchers.IO + job)
+         scope.launch {
+             WordsDatabase.getInstance(requireContext()).dao
+                 .add(
+-                    WordEntity(
+-                        0,
+-                        binding.editTextFirstLanguage.text.toString(),
+-                        binding.editTextSecondLanguage.text.toString(),
+-                        false
+-                    )
++                    WordEntity(0, s1, s2, false)
+                 )
++            binding.editTextFirstLanguage.text.clear()
++            binding.editTextSecondLanguage.text.clear()
+         }
+ 
+     }
+Index: app/src/main/java/com/nourtech/wordpress/myvocab/list/ListActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.nourtech.wordpress.myvocab.list\r\n\r\nimport android.os.Bundle\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.lifecycle.LiveData\r\nimport androidx.lifecycle.MutableLiveData\r\nimport androidx.lifecycle.Observer\r\nimport androidx.recyclerview.widget.LinearLayoutManager\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.nourtech.wordpress.myvocab.R\r\nimport com.nourtech.wordpress.myvocab.list.add.AddDialog\r\nimport com.nourtech.wordpress.myvocab.databinding.ActivityListBinding\r\nimport com.nourtech.wordpress.myvocab.db.WordEntity\r\nimport com.nourtech.wordpress.myvocab.db.WordsDatabase\r\nimport kotlinx.coroutines.*\r\n\r\n\r\n@InternalCoroutinesApi\r\nclass ListActivity : AppCompatActivity() {\r\n    private lateinit var binding :ActivityListBinding\r\n    private lateinit var recyclerView: RecyclerView\r\n    private val job = Job()\r\n    private val scope = CoroutineScope(job + Dispatchers.IO)\r\n    private lateinit var list  : LiveData<List<WordEntity>>\r\n\r\n    @InternalCoroutinesApi\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        binding = ActivityListBinding.inflate(layoutInflater)\r\n        setContentView(binding.root)\r\n        setSupportActionBar(findViewById(R.id.toolbar))\r\n        recyclerView = binding.recyclerViewWords\r\n        list = WordsDatabase.getInstance(application).dao.getAllLive()\r\n        list.observe(this, Observer<List<WordEntity>>{ newList ->\r\n            recyclerView.adapter = WordRecycleViewAdapter(newList)\r\n        })\r\n\r\n        recyclerView.layoutManager = LinearLayoutManager(this)\r\n        binding.fab.setOnClickListener {\r\n            val dialog = AddDialog()\r\n            dialog.show(supportFragmentManager,null)\r\n        }\r\n\r\n    }\r\n\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/nourtech/wordpress/myvocab/list/ListActivity.kt	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/java/com/nourtech/wordpress/myvocab/list/ListActivity.kt	(date 1610741723115)
+@@ -3,12 +3,10 @@
+ import android.os.Bundle
+ import androidx.appcompat.app.AppCompatActivity
+ import androidx.lifecycle.LiveData
+-import androidx.lifecycle.MutableLiveData
+-import androidx.lifecycle.Observer
+ import androidx.recyclerview.widget.LinearLayoutManager
+ import androidx.recyclerview.widget.RecyclerView
+ import com.nourtech.wordpress.myvocab.R
+-import com.nourtech.wordpress.myvocab.list.add.AddDialog
++import com.nourtech.wordpress.myvocab.add.AddDialog
+ import com.nourtech.wordpress.myvocab.databinding.ActivityListBinding
+ import com.nourtech.wordpress.myvocab.db.WordEntity
+ import com.nourtech.wordpress.myvocab.db.WordsDatabase
+@@ -19,20 +17,27 @@
+ class ListActivity : AppCompatActivity() {
+     private lateinit var binding :ActivityListBinding
+     private lateinit var recyclerView: RecyclerView
+-    private val job = Job()
+-    private val scope = CoroutineScope(job + Dispatchers.IO)
+-    private lateinit var list  : LiveData<List<WordEntity>>
++    private lateinit var viewModel: ListViewModel
+ 
+     @InternalCoroutinesApi
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
++
++        // setup data binding
+         binding = ActivityListBinding.inflate(layoutInflater)
+         setContentView(binding.root)
++
++        // set action bar
+         setSupportActionBar(findViewById(R.id.toolbar))
+         recyclerView = binding.recyclerViewWords
+-        list = WordsDatabase.getInstance(application).dao.getAllLive()
+-        list.observe(this, Observer<List<WordEntity>>{ newList ->
+-            recyclerView.adapter = WordRecycleViewAdapter(newList)
++
++        // init view model
++        viewModel = ListViewModel.ViewModelFactory(application)
++            .create(ListViewModel::class.java)
++
++        // refresh recycler view as list changed
++        viewModel.list.observe(this, { newList ->
++            recyclerView.adapter = WordRecycleViewAdapter(newList, viewModel, applicationContext)
+         })
+ 
+         recyclerView.layoutManager = LinearLayoutManager(this)
+Index: app/src/main/java/com/nourtech/wordpress/myvocab/list/WordRecycleViewAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.nourtech.wordpress.myvocab.list\r\n\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.TextView\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.nourtech.wordpress.myvocab.R\r\nimport com.nourtech.wordpress.myvocab.db.WordEntity\r\n\r\n\r\nclass WordRecycleViewAdapter(private val wordList: List<WordEntity>) : RecyclerView.Adapter<WordRecycleViewAdapter.WordViewHolder>(){\r\n    class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){\r\n         val lang1TextView : TextView = itemView.findViewById(R.id.lang1TextView)\r\n         val lang2TextView : TextView = itemView.findViewById(R.id.lang2TextView)\r\n    }\r\n\r\n    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {\r\n        val view = LayoutInflater.from(parent.context)\r\n            .inflate(R.layout.content_word_recycler_view, parent, false)\r\n        return WordViewHolder(view)\r\n    }\r\n\r\n    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {\r\n        holder.lang1TextView.text = wordList[position].lang1\r\n        holder.lang2TextView.text = wordList[position].lang2\r\n    }\r\n\r\n    override fun getItemCount() = wordList.size\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/nourtech/wordpress/myvocab/list/WordRecycleViewAdapter.kt	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/java/com/nourtech/wordpress/myvocab/list/WordRecycleViewAdapter.kt	(date 1610741891966)
+@@ -1,5 +1,8 @@
+ package com.nourtech.wordpress.myvocab.list
+ 
++import android.app.AlertDialog
++import android.content.Context
++import android.content.DialogInterface
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+@@ -7,9 +10,16 @@
+ import androidx.recyclerview.widget.RecyclerView
+ import com.nourtech.wordpress.myvocab.R
+ import com.nourtech.wordpress.myvocab.db.WordEntity
++import kotlinx.coroutines.InternalCoroutinesApi
+ 
+ 
+-class WordRecycleViewAdapter(private val wordList: List<WordEntity>) : RecyclerView.Adapter<WordRecycleViewAdapter.WordViewHolder>(){
++@InternalCoroutinesApi
++class WordRecycleViewAdapter(
++    private val wordList: List<WordEntity>,
++    private val viewModel: ListViewModel,
++    private val context: Context
++) : RecyclerView.Adapter<WordRecycleViewAdapter.WordViewHolder>() {
++
+     class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+          val lang1TextView : TextView = itemView.findViewById(R.id.lang1TextView)
+          val lang2TextView : TextView = itemView.findViewById(R.id.lang2TextView)
+@@ -24,6 +34,26 @@
+     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
+         holder.lang1TextView.text = wordList[position].lang1
+         holder.lang2TextView.text = wordList[position].lang2
++        holder.lang1TextView.setOnLongClickListener {
++            deleteDialog(position)
++            true
++        }
++        holder.lang2TextView.setOnLongClickListener {
++            deleteDialog(position)
++            true
++        }
++    }
++
++    private fun deleteDialog(position: Int) {
++        var b = false
++        AlertDialog.Builder(context).setTitle("Delete ?")
++            .setPositiveButton("Delete") { _, _ ->
++                b = true
++            }.setNegativeButton("Cancel") { _, _ ->
++                b = false
++            }.create().show()
++        if (b)
++            viewModel.deleteWord(wordList[position])
+     }
+ 
+     override fun getItemCount() = wordList.size
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\r\nbuildscript {\r\n    ext.kotlin_version = \"1.4.21\"\r\n    repositories {\r\n        google()\r\n        jcenter()\r\n    }\r\n    dependencies {\r\n        classpath \"com.android.tools.build:gradle:4.0.2\"\r\n        classpath \"org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21\"\r\n\r\n        // NOTE: Do not place your application dependencies here; they belong\r\n        // in the individual module build.gradle files\r\n    }\r\n}\r\n\r\nallprojects {\r\n    repositories {\r\n        google()\r\n        jcenter()\r\n    }\r\n}\r\n\r\ntask clean(type: Delete) {\r\n    delete rootProject.buildDir\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- build.gradle	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ build.gradle	(date 1610732605891)
+@@ -6,7 +6,7 @@
+         jcenter()
+     }
+     dependencies {
+-        classpath "com.android.tools.build:gradle:4.0.2"
++        classpath 'com.android.tools.build:gradle:4.1.1'
+         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21"
+ 
+         // NOTE: Do not place your application dependencies here; they belong
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ .idea/gradle.xml	(date 1610720298123)
+@@ -15,6 +15,7 @@
+           </set>
+         </option>
+         <option name="resolveModulePerSourceSet" value="false" />
++        <option name="useQualifiedModuleNames" value="true" />
+       </GradleProjectSettings>
+     </option>
+   </component>
+Index: app/src/main/res/menu/mainactivity_meny.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<menu xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\">\r\n\r\n    <item\r\n        android:id=\"@+id/menuItem_show\"\r\n        android:checkable=\"true\"\r\n        android:title=\"@string/show_memorized_word\" />\r\n    <item\r\n        android:id=\"@+id/menuItem_add\"\r\n        android:icon=\"@android:drawable/ic_input_add\"\r\n        android:title=\"@string/add\" />\r\n    <item\r\n        android:id=\"@+id/menuItem_list\"\r\n        android:title=\"@string/list\" />\r\n    <item\r\n        android:id=\"@+id/menuItem_shuffle\"\r\n        android:title=\"@string/shuffle\" />\r\n    <item\r\n        android:id=\"@+id/menuItem_clear\"\r\n        android:title=\"@string/clear\" />\r\n    <item\r\n        android:id=\"@+id/menuItem_exit\"\r\n        android:title=\"@string/exit\" />\r\n</menu>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/menu/mainactivity_meny.xml	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/res/menu/mainactivity_meny.xml	(date 1610561188524)
+@@ -1,11 +1,10 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+-    xmlns:android="http://schemas.android.com/apk/res/android">
++<menu xmlns:android="http://schemas.android.com/apk/res/android">
+ 
+     <item
+-        android:id="@+id/menuItem_show"
++        android:id="@+id/menuItem_filter"
+         android:checkable="true"
+-        android:title="@string/show_memorized_word" />
++        android:title="@string/filter" />
+     <item
+         android:id="@+id/menuItem_add"
+         android:icon="@android:drawable/ic_input_add"
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_8\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ .idea/misc.xml	(date 1610724753017)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+Index: app/src/main/java/com/nourtech/wordpress/myvocab/db/WordsDatabase.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.nourtech.wordpress.myvocab.db;\r\n\r\nimport android.content.Context\r\nimport androidx.room.Database\r\nimport androidx.room.Room\r\nimport androidx.room.RoomDatabase\r\nimport kotlinx.coroutines.*\r\nimport kotlinx.coroutines.internal.synchronized\r\n\r\n\r\n@Database(entities = [WordEntity::class], version = 1)\r\nabstract class WordsDatabase : RoomDatabase() {\r\n\r\n       \r\n        abstract val dao: WordsDAO\r\n        companion object{\r\n            @Volatile\r\n            private var Instance: WordsDatabase? = null\r\n\r\n            @InternalCoroutinesApi\r\n             fun getInstance(context: Context) : WordsDatabase {\r\n                synchronized(this){\r\n                    var instance = Instance\r\n                    if (instance == null){\r\n                        instance = Room.databaseBuilder(context.applicationContext, WordsDatabase::class.java, \"words\")\r\n                            .fallbackToDestructiveMigration()\r\n                            .build()\r\n                        Instance = instance\r\n                    }\r\n                    val job = Job()\r\n                    val scope = CoroutineScope(Dispatchers.IO + job)\r\n                    scope.launch {\r\n                        if (instance.dao.getAll().isEmpty()) {\r\n                            instance.dao.add(WordEntity(0, \"\", \"\", false))\r\n                        }\r\n                    }\r\n                    return instance\r\n                }\r\n\r\n            }\r\n        }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/nourtech/wordpress/myvocab/db/WordsDatabase.kt	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/java/com/nourtech/wordpress/myvocab/db/WordsDatabase.kt	(date 1610659204095)
+@@ -4,40 +4,38 @@
+ import androidx.room.Database
+ import androidx.room.Room
+ import androidx.room.RoomDatabase
+-import kotlinx.coroutines.*
++import kotlinx.coroutines.InternalCoroutinesApi
+ import kotlinx.coroutines.internal.synchronized
+ 
+ 
+ @Database(entities = [WordEntity::class], version = 1)
+ abstract class WordsDatabase : RoomDatabase() {
+ 
+-       
+-        abstract val dao: WordsDAO
+-        companion object{
+-            @Volatile
+-            private var Instance: WordsDatabase? = null
++    abstract val dao: WordsDAO
++
++    companion object {
++        @Volatile
++        private var Instance: WordsDatabase? = null
+ 
+-            @InternalCoroutinesApi
+-             fun getInstance(context: Context) : WordsDatabase {
+-                synchronized(this){
+-                    var instance = Instance
+-                    if (instance == null){
+-                        instance = Room.databaseBuilder(context.applicationContext, WordsDatabase::class.java, "words")
+-                            .fallbackToDestructiveMigration()
+-                            .build()
+-                        Instance = instance
+-                    }
+-                    val job = Job()
+-                    val scope = CoroutineScope(Dispatchers.IO + job)
+-                    scope.launch {
+-                        if (instance.dao.getAll().isEmpty()) {
+-                            instance.dao.add(WordEntity(0, "", "", false))
+-                        }
+-                    }
+-                    return instance
+-                }
++        @InternalCoroutinesApi
++        fun getInstance(context: Context): WordsDatabase {
++            synchronized(this) {
++                var instance = Instance
++                if (instance == null) {
++                    instance = Room.databaseBuilder(
++                        context.applicationContext,
++                        WordsDatabase::class.java,
++                        "words"
++                    )
++                        .fallbackToDestructiveMigration()
++                        .build()
++                    Instance = instance
++                }
++
++                return instance
++            }
+ 
+-            }
+-        }
++        }
++    }
+ }
+ 
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<layout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <data>\r\n        <variable\r\n            name=\"viewModel\"\r\n            type=\"com.nourtech.wordpress.myvocab.main.WordViewModel\" />\r\n    </data>\r\n    <androidx.constraintlayout.widget.ConstraintLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        tools:context=\".main.MainActivity\">\r\n\r\n        <Button\r\n            android:id=\"@+id/button_show\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/show\"\r\n            app:layout_constraintBottom_toBottomOf=\"@+id/button_previous\"\r\n            app:layout_constraintEnd_toStartOf=\"@+id/button_next\"\r\n            app:layout_constraintHorizontal_bias=\"0.5\"\r\n            app:layout_constraintStart_toEndOf=\"@+id/button_previous\"\r\n            app:layout_constraintTop_toTopOf=\"@+id/button_previous\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/button_previous\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/previous\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toStartOf=\"@+id/button_show\"\r\n            app:layout_constraintHorizontal_bias=\"0.5\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"parent\"\r\n            app:layout_constraintVertical_bias=\"0.85\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/button_next\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/next\"\r\n            app:layout_constraintBottom_toBottomOf=\"@+id/button_show\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.5\"\r\n            app:layout_constraintStart_toEndOf=\"@+id/button_show\"\r\n            app:layout_constraintTop_toTopOf=\"@+id/button_show\"\r\n            app:layout_constraintVertical_bias=\"0.85\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"0dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"vertical\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/button_show\"\r\n            app:layout_constraintEnd_toEndOf=\"@+id/button_next\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/button_previous\"\r\n            app:layout_constraintTop_toBottomOf=\"@+id/checkBox_memorized\"\r\n            app:layout_constraintVertical_bias=\"0.19\">\r\n\r\n            <TextView\r\n                android:id=\"@+id/textView\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:background=\"#ffe6e6\"\r\n                android:text=\"@{viewModel.word.lang1}\" />\r\n\r\n            <TextView\r\n                android:id=\"@+id/textView2\"\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:background=\"#ffe6e6\"\r\n                android:text=\"@{viewModel.word.lang2}\" />\r\n        </LinearLayout>\r\n\r\n        <CheckBox\r\n            android:id=\"@+id/checkBox_memorized\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginTop=\"32dp\"\r\n            android:text=\"@string/memorized\"\r\n            android:checked=\"@{viewModel.word.memorized}\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.0\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/button_previous\"\r\n            app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n    </androidx.constraintlayout.widget.ConstraintLayout>\r\n</layout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/res/layout/activity_main.xml	(date 1610735820155)
+@@ -48,6 +48,7 @@
+             app:layout_constraintVertical_bias="0.85" />
+ 
+         <LinearLayout
++            android:id="@+id/linearLayout"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:orientation="vertical"
+@@ -62,14 +63,16 @@
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="#ffe6e6"
+-                android:text="@{viewModel.word.lang1}" />
++                android:text="@{viewModel.word.lang1}"
++                android:textSize="36sp" />
+ 
+             <TextView
+                 android:id="@+id/textView2"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="#ffe6e6"
+-                android:text="@{viewModel.word.lang2}" />
++                android:text="@{viewModel.word.lang2}"
++                android:textSize="36sp" />
+         </LinearLayout>
+ 
+         <CheckBox
+@@ -84,5 +87,14 @@
+             app:layout_constraintStart_toStartOf="@+id/button_previous"
+             app:layout_constraintTop_toTopOf="parent" />
+ 
++        <ImageButton
++            android:id="@+id/imageButton_speaker"
++            android:layout_width="38dp"
++            android:layout_height="37dp"
++            android:layout_marginTop="32dp"
++            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
++            app:layout_constraintTop_toTopOf="parent"
++            app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
++
+     </androidx.constraintlayout.widget.ConstraintLayout>
+ </layout>
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <string name=\"app_name\">My Vocab</string>\r\n    <string name=\"memorized\">memorized</string>\r\n    <string name=\"next\">next</string>\r\n    <string name=\"previous\">previous</string>\r\n    <string name=\"show\">show</string>\r\n    <string name=\"lang1_word\">lang 1 word ...</string>\r\n    <string name=\"lang2word\">lang 2 word</string>\r\n    <string name=\"list\">list</string>\r\n    <string name=\"title_activity_list\">List</string>\r\n    <!-- Strings used for fragments for navigation -->\r\n    <string name=\"first_fragment_label\">First Fragment</string>\r\n    <string name=\"second_fragment_label\">Second Fragment</string>\r\n\r\n    <string name=\"hello_first_fragment\">Hello first fragment</string>\r\n    <string name=\"hello_second_fragment\">Hello second fragment. Arg: %1$s</string>\r\n    <string name=\"cancel\">Cancel</string>\r\n    <string name=\"add\">Add</string>\r\n    <string name=\"ok\">OK</string>\r\n    <string name=\"clear\">Clear</string>\r\n    <string name=\"exit\">Exit</string>\r\n    <string name=\"shuffle\">shuffle</string>\r\n    <string name=\"show_memorized_word\">Show memorized word</string>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/res/values/strings.xml	(date 1610560831266)
+@@ -21,4 +21,5 @@
+     <string name="exit">Exit</string>
+     <string name="shuffle">shuffle</string>
+     <string name="show_memorized_word">Show memorized word</string>
++    <string name="filter">filter</string>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/nourtech/wordpress/myvocab/main/WordViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.nourtech.wordpress.myvocab.main\r\n\r\nimport android.app.Application\r\nimport androidx.lifecycle.LiveData\r\nimport androidx.lifecycle.MutableLiveData\r\nimport com.nourtech.wordpress.myvocab.db.WordEntity\r\nimport com.nourtech.wordpress.myvocab.db.WordsDAO\r\nimport kotlinx.coroutines.*\r\n\r\nclass WordViewModel(private var datasource: WordsDAO, application: Application) : androidx.lifecycle.AndroidViewModel(application) {\r\n\r\n    private val job = Job()\r\n    private val ioScope = CoroutineScope(Dispatchers.IO + job)\r\n\r\n    var list :MutableList<WordEntity> = listOf(WordEntity(0,\"your list is empty\", \"\", false)).toMutableList()\r\n    init {\r\n        GlobalScope.launch {\r\n            list = datasource.getAll().toMutableList()\r\n        }\r\n    }\r\n\r\n    private var id = 0\r\n    private val _word = MutableLiveData<WordEntity>()\r\n    val word : LiveData<WordEntity>\r\n        get () = _word\r\n\r\n\r\n    fun next(){\r\n        if (id == list.size - 1)\r\n            id = 0\r\n        else\r\n            id++\r\n        update()\r\n    }\r\n\r\n    fun previous(){\r\n        if (id > 0 )\r\n            id--\r\n        // check if list is empty or has 1 element\r\n        else if (list.size in 0 .. 1)\r\n            return\r\n        else\r\n            id = list.size - 1\r\n        update()\r\n    }\r\n\r\n    private fun update(){\r\n        _word.value = list[id]\r\n    }\r\n\r\n    fun check(b :Boolean){\r\n        list[id].memorized = b\r\n        ioScope.launch {\r\n            datasource.memorize(list[id])\r\n        }\r\n    }\r\n    fun clear(){\r\n        ioScope.launch {\r\n            datasource.clear()\r\n        }\r\n    }\r\n    fun shuffle(){\r\n        // use Fisher - Yates shuffle algorithm\r\n        for (i in list.size - 1 downTo  0){\r\n\r\n            // generate a random number between 0 and i\r\n            val r = (0 .. i).random()\r\n\r\n            // swap i and r elements\r\n            val element = list[r]\r\n            list[r] = list[i]\r\n            list[i] = element\r\n\r\n            // reset id and update\r\n            id = 0\r\n            update()\r\n        }\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/nourtech/wordpress/myvocab/main/WordViewModel.kt	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/java/com/nourtech/wordpress/myvocab/main/WordViewModel.kt	(date 1610564501845)
+@@ -11,12 +11,10 @@
+ 
+     private val job = Job()
+     private val ioScope = CoroutineScope(Dispatchers.IO + job)
+-
+-    var list :MutableList<WordEntity> = listOf(WordEntity(0,"your list is empty", "", false)).toMutableList()
++    private var filter = false
++    private lateinit var list :MutableList<WordEntity>
+     init {
+-        GlobalScope.launch {
+-            list = datasource.getAll().toMutableList()
+-        }
++        updateList()
+     }
+ 
+     private var id = 0
+@@ -45,13 +43,23 @@
+     }
+ 
+     private fun update(){
+-        _word.value = list[id]
++        if (list.isNotEmpty())
++            _word.value = list[id]
++        else
++            _word.value = WordEntity(0, "your list is empty",
++                "your list is empty", false)
+     }
+ 
+     fun check(b :Boolean){
++        if (list.isEmpty())
++            return
+         list[id].memorized = b
++        val item = list[id]
+         ioScope.launch {
+-            datasource.memorize(list[id])
++            datasource.memorize(item)
++        }
++        if (filter && b){
++            list.remove(list[id])
+         }
+     }
+     fun clear(){
+@@ -76,5 +84,29 @@
+             update()
+         }
+     }
+-
++    fun filter(checked: Boolean){
++        filter = checked
++        // remove all memorized words
++        val _list   = listOf<WordEntity>().toMutableList()
++        if (checked){
++            for (x in list){
++                if (!x.memorized){
++                    _list.add(x)
++                }
++            }
++            list = _list
++        }
++
++        // show all words
++        else{
++            updateList()
++        }
++        id = 0
++        update()
++    }
++     fun updateList(){
++        GlobalScope.launch {
++            list = datasource.getAll().toMutableList()
++        }
++    }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/nourtech/wordpress/myvocab/main/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.nourtech.wordpress.myvocab.main\r\n\r\nimport android.content.Intent\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport android.os.Bundle\r\nimport android.view.Menu\r\nimport android.view.View\r\nimport com.nourtech.wordpress.myvocab.R\r\nimport com.nourtech.wordpress.myvocab.list.ListActivity\r\nimport com.nourtech.wordpress.myvocab.databinding.ActivityMainBinding\r\nimport com.nourtech.wordpress.myvocab.list.add.AddDialog\r\nimport kotlinx.coroutines.InternalCoroutinesApi\r\n\r\nclass MainActivity : AppCompatActivity() {\r\n\r\n    private lateinit var viewModel: WordViewModel\r\n    private lateinit var binding:ActivityMainBinding\r\n\r\n    @InternalCoroutinesApi\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n\r\n        // setup view model\r\n        viewModel= WordViewModelFactory(application)\r\n            .create(WordViewModel::class.java)\r\n\r\n        // setup data binding\r\n        binding = ActivityMainBinding.inflate(layoutInflater)\r\n        binding.lifecycleOwner = this\r\n        binding.viewModel = viewModel\r\n\r\n        // inflate layout\r\n        setContentView(binding.root)\r\n\r\n        // make textView2 invisible\r\n        binding.textView2.visibility = View.INVISIBLE\r\n\r\n        // set listeners\r\n        setListeners()\r\n    }\r\n\r\n    @InternalCoroutinesApi\r\n    override fun onCreateOptionsMenu(menu: Menu?): Boolean {\r\n        menuInflater.inflate(R.menu.mainactivity_meny, menu)\r\n        menu?.findItem(R.id.menuItem_add)?.setOnMenuItemClickListener {\r\n            val dialog = AddDialog()\r\n            dialog.show(supportFragmentManager,null)\r\n            true\r\n        }\r\n        menu?.findItem(R.id.menuItem_list)?.setOnMenuItemClickListener {\r\n            startActivity(Intent(this, ListActivity::class.java))\r\n            true\r\n        }\r\n        menu?.findItem(R.id.menuItem_clear)?.setOnMenuItemClickListener {\r\n            viewModel.clear()\r\n            true\r\n        }\r\n        menu?.findItem(R.id.menuItem_shuffle)?.setOnMenuItemClickListener {\r\n            viewModel.shuffle()\r\n            true\r\n        }\r\n        menu?.findItem(R.id.menuItem_exit)?.setOnMenuItemClickListener {\r\n            finish()\r\n            true\r\n        }\r\n        return super.onCreateOptionsMenu(menu)\r\n    }\r\n    private fun setListeners(){\r\n        binding.buttonNext.setOnClickListener {\r\n            viewModel.next()\r\n            binding.textView2.visibility = View.INVISIBLE\r\n        }\r\n        binding.buttonPrevious.setOnClickListener {\r\n            viewModel.previous()\r\n            binding.textView2.visibility = View.INVISIBLE\r\n        }\r\n        binding.checkBoxMemorized.setOnCheckedChangeListener{\r\n                _, isChecked -> viewModel.check(isChecked)\r\n        }\r\n        binding.buttonShow.setOnClickListener {\r\n            binding.textView2.visibility = View.VISIBLE\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/nourtech/wordpress/myvocab/main/MainActivity.kt	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ app/src/main/java/com/nourtech/wordpress/myvocab/main/MainActivity.kt	(date 1610735820089)
+@@ -1,21 +1,24 @@
+ package com.nourtech.wordpress.myvocab.main
+ 
+ import android.content.Intent
+-import androidx.appcompat.app.AppCompatActivity
+ import android.os.Bundle
++import android.speech.tts.TextToSpeech
++import android.util.Log
+ import android.view.Menu
+ import android.view.View
++import androidx.appcompat.app.AppCompatActivity
+ import com.nourtech.wordpress.myvocab.R
++import com.nourtech.wordpress.myvocab.add.AddDialog
++import com.nourtech.wordpress.myvocab.databinding.ActivityMainBinding
+ import com.nourtech.wordpress.myvocab.list.ListActivity
+-import com.nourtech.wordpress.myvocab.databinding.ActivityMainBinding
+-import com.nourtech.wordpress.myvocab.list.add.AddDialog
+ import kotlinx.coroutines.InternalCoroutinesApi
++import java.util.*
+ 
+-class MainActivity : AppCompatActivity() {
++class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
+ 
+     private lateinit var viewModel: WordViewModel
+     private lateinit var binding:ActivityMainBinding
+-
++    private lateinit var tts: TextToSpeech
+     @InternalCoroutinesApi
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+@@ -35,16 +38,30 @@
+         // make textView2 invisible
+         binding.textView2.visibility = View.INVISIBLE
+ 
++        // init tts
++        tts = TextToSpeech(this, this)
++
+         // set listeners
+         setListeners()
+     }
+ 
++    override fun onResume() {
++        super.onResume()
++        viewModel.updateList()
++    }
++
+     @InternalCoroutinesApi
+     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+         menuInflater.inflate(R.menu.mainactivity_meny, menu)
+         menu?.findItem(R.id.menuItem_add)?.setOnMenuItemClickListener {
+             val dialog = AddDialog()
+-            dialog.show(supportFragmentManager,null)
++            dialog.show(supportFragmentManager, null)
++            viewModel.updateList()
++            true
++        }
++        menu?.findItem(R.id.menuItem_filter)?.setOnMenuItemClickListener {
++            it.isChecked = !it.isChecked
++            viewModel.filter(it.isChecked)
+             true
+         }
+         menu?.findItem(R.id.menuItem_list)?.setOnMenuItemClickListener {
+@@ -53,10 +70,12 @@
+         }
+         menu?.findItem(R.id.menuItem_clear)?.setOnMenuItemClickListener {
+             viewModel.clear()
++            viewModel.updateList()
+             true
+         }
+         menu?.findItem(R.id.menuItem_shuffle)?.setOnMenuItemClickListener {
+             viewModel.shuffle()
++            viewModel.updateList()
+             true
+         }
+         menu?.findItem(R.id.menuItem_exit)?.setOnMenuItemClickListener {
+@@ -74,11 +93,41 @@
+             viewModel.previous()
+             binding.textView2.visibility = View.INVISIBLE
+         }
+-        binding.checkBoxMemorized.setOnCheckedChangeListener{
+-                _, isChecked -> viewModel.check(isChecked)
++        binding.checkBoxMemorized.setOnCheckedChangeListener{ _, isChecked -> viewModel.check(
++            isChecked
++        )
+         }
+         binding.buttonShow.setOnClickListener {
+             binding.textView2.visibility = View.VISIBLE
+         }
++        binding.imageButtonSpeaker.setOnClickListener {
++            speakOut()
++        }
++    }
++    // for tts
++    override fun onInit(status: Int) {
++
++        // TODO Auto-generated method stub
++        if (status == TextToSpeech.SUCCESS) {
++            val result = tts.setLanguage(Locale.US)
++
++            // tts.setPitch(5); // set pitch level
++
++            // tts.setSpeechRate(2); // set speech speed rate
++            if (result == TextToSpeech.LANG_MISSING_DATA
++                || result == TextToSpeech.LANG_NOT_SUPPORTED
++            ) {
++                Log.e("TTS", "Language is not supported")
++            } else {
++                binding.imageButtonSpeaker.isEnabled = true
++                speakOut()
++            }
++        } else {
++            Log.e("TTS", "Initilization Failed")
++        }
++    }
++    private fun speakOut() {
++        val text: String = viewModel.word.value?.lang1.toString()
++        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null)
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/nourtech/wordpress/myvocab/list/ListViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/nourtech/wordpress/myvocab/list/ListViewModel.kt	(date 1610740238487)
++++ app/src/main/java/com/nourtech/wordpress/myvocab/list/ListViewModel.kt	(date 1610740238487)
+@@ -0,0 +1,45 @@
++package com.nourtech.wordpress.myvocab.list
++
++import android.app.Application
++import androidx.lifecycle.LiveData
++import androidx.lifecycle.ViewModel
++import androidx.lifecycle.ViewModelProvider
++import com.nourtech.wordpress.myvocab.db.WordEntity
++import com.nourtech.wordpress.myvocab.db.WordsDAO
++import com.nourtech.wordpress.myvocab.db.WordsDatabase
++import kotlinx.coroutines.*
++
++@InternalCoroutinesApi
++class ListViewModel(private var datasource: WordsDAO, application: Application) : ViewModel() {
++
++
++    // view model factory
++    class ViewModelFactory(
++        private val application: Application
++    ) : ViewModelProvider.Factory {
++
++        @InternalCoroutinesApi
++        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
++            if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
++
++                return ListViewModel(WordsDatabase.getInstance(application).dao, application) as T
++            }
++            throw IllegalArgumentException("Unknown ViewModel class")
++        }
++    }
++
++    // for access io thread
++    private val job = Job()
++    private val ioScope = CoroutineScope(Dispatchers.IO + job)
++
++    // live list of words
++    val list: LiveData<List<WordEntity>> = WordsDatabase
++        .getInstance(application).dao.getAllLive()
++
++    fun deleteWord(word: WordEntity) {
++        ioScope.launch {
++            datasource.delete(word)
++        }
++    }
++
++}
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/compiler.xml	(date 1610724753142)
++++ .idea/compiler.xml	(date 1610724753142)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <bytecodeTargetLevel target="1.8" />
++  </component>
++</project>
+\ No newline at end of file
+Index: gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Mon Dec 28 17:57:20 EET 2020\r\ndistributionBase=GRADLE_USER_HOME\r\ndistributionPath=wrapper/dists\r\nzipStoreBase=GRADLE_USER_HOME\r\nzipStorePath=wrapper/dists\r\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-6.1.1-all.zip\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- gradle/wrapper/gradle-wrapper.properties	(revision 28de4a9685155cd5fdc9d796e7a76b436d34f139)
++++ gradle/wrapper/gradle-wrapper.properties	(date 1610732605969)
+@@ -1,6 +1,6 @@
+-#Mon Dec 28 17:57:20 EET 2020
++#Fri Jan 15 19:43:25 EET 2021
+ distributionBase=GRADLE_USER_HOME
+ distributionPath=wrapper/dists
+ zipStoreBase=GRADLE_USER_HOME
+ zipStorePath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
++distributionUrl=https\://services.gradle.org/distributions/gradle-6.5-bin.zip

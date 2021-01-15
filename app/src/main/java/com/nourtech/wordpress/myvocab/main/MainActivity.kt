@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 speakOut()
             }
         } else {
-            Log.e("TTS", "Initilization Failed")
+            Log.e("TTS", "Initialization Failed")
         }
     }
     private fun speakOut() {

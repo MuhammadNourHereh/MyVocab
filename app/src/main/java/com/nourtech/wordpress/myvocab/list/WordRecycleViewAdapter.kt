@@ -1,12 +1,15 @@
 package com.nourtech.wordpress.myvocab.list
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.db.WordEntity
@@ -17,7 +20,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 class WordRecycleViewAdapter(
     private val wordList: List<WordEntity>,
     private val viewModel: ListViewModel,
-    private val context: Context
+    private val supportFragmentManager: FragmentManager
 ) : RecyclerView.Adapter<WordRecycleViewAdapter.WordViewHolder>() {
 
     class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -45,15 +48,29 @@ class WordRecycleViewAdapter(
     }
 
     private fun deleteDialog(position: Int) {
-        var b = false
-        AlertDialog.Builder(context).setTitle("Delete ?")
-            .setPositiveButton("Delete") { _, _ ->
-                b = true
-            }.setNegativeButton("Cancel") { _, _ ->
-                b = false
-            }.create().show()
-        if (b)
-            viewModel.deleteWord(wordList[position])
+
+        object : DialogFragment() {
+
+            override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+                return activity?.let {
+                    // Use the Builder class for convenient dialog construction
+                    val builder = AlertDialog.Builder(it)
+                    builder.setMessage("Delete ?")
+                        .setPositiveButton("delete"
+                        ) { _, _ ->
+                            viewModel.deleteWord(wordList[position])
+                        }
+                        .setNegativeButton(R.string.cancel
+                        ) { _, _ ->
+                            dismiss()
+                        }
+                    // Create the AlertDialog object and return it
+                    builder.create()
+                } ?: throw IllegalStateException("Activity cannot be null")
+            }
+        }.show(supportFragmentManager, null)
+
+
     }
 
     override fun getItemCount() = wordList.size
