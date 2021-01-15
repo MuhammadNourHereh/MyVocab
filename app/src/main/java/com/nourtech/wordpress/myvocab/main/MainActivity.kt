@@ -1,6 +1,7 @@
 package com.nourtech.wordpress.myvocab.main
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -17,14 +18,15 @@ import java.util.*
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var viewModel: WordViewModel
-    private lateinit var binding:ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var tts: TextToSpeech
+
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // setup view model
-        viewModel= WordViewModelFactory(application)
+        viewModel = WordViewModelFactory(application)
             .create(WordViewModel::class.java)
 
         // setup data binding
@@ -84,7 +86,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         return super.onCreateOptionsMenu(menu)
     }
-    private fun setListeners(){
+
+    private fun setListeners() {
         binding.buttonNext.setOnClickListener {
             viewModel.next()
             binding.textView2.visibility = View.INVISIBLE
@@ -93,9 +96,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             viewModel.previous()
             binding.textView2.visibility = View.INVISIBLE
         }
-        binding.checkBoxMemorized.setOnCheckedChangeListener{ _, isChecked -> viewModel.check(
-            isChecked
-        )
+        binding.checkBoxMemorized.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.check(
+                isChecked
+            )
         }
         binding.buttonShow.setOnClickListener {
             binding.textView2.visibility = View.VISIBLE
@@ -104,10 +108,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             speakOut()
         }
     }
+
     // for tts
     override fun onInit(status: Int) {
 
-        // TODO Auto-generated method stub
         if (status == TextToSpeech.SUCCESS) {
             val result = tts.setLanguage(Locale.US)
 
@@ -120,14 +124,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 Log.e("TTS", "Language is not supported")
             } else {
                 binding.imageButtonSpeaker.isEnabled = true
-                speakOut()
             }
         } else {
             Log.e("TTS", "Initialization Failed")
         }
     }
+
     private fun speakOut() {
         val text: String = viewModel.word.value?.lang1.toString()
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tts.speak(text,TextToSpeech.QUEUE_FLUSH,null,null)
+        } else {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null)
+        }
     }
 }

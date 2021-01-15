@@ -4,7 +4,7 @@
     <string name="next">next</string>
     <string name="previous">previous</string>
     <string name="show">show</string>
-    <string name="lang1_word">lang 1 word ...</string>
+    <string name="lang1_word">lang 1 word …</string>
     <string name="lang2word">lang 2 word</string>
     <string name="list">list</string>
     <string name="title_activity_list">List</string>
@@ -22,4 +22,21 @@
     <string name="shuffle">shuffle</string>
     <string name="show_memorized_word">Show memorized word</string>
     <string name="filter">filter</string>
+    <string name="read">read</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>

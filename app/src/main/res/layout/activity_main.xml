@@ -33,7 +33,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.85" />
+            app:layout_constraintVertical_bias="0.9" />
 
         <Button
             android:id="@+id/button_next"
@@ -55,8 +55,7 @@
             app:layout_constraintBottom_toTopOf="@+id/button_show"
             app:layout_constraintEnd_toEndOf="@+id/button_next"
             app:layout_constraintStart_toStartOf="@+id/button_previous"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox_memorized"
-            app:layout_constraintVertical_bias="0.19">
+            app:layout_constraintTop_toBottomOf="@+id/checkBox_memorized">
 
             <TextView
                 android:id="@+id/textView"
@@ -80,8 +79,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="@string/memorized"
             android:checked="@{viewModel.word.memorized}"
+            android:text="@string/memorized"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/button_previous"
@@ -89,9 +88,10 @@
 
         <ImageButton
             android:id="@+id/imageButton_speaker"
-            android:layout_width="38dp"
-            android:layout_height="37dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:contentDescription="@string/read"
             app:layout_constraintEnd_toEndOf="@+id/linearLayout"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />

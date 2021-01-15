@@ -21,11 +21,12 @@ class AddDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
         binding = DialogAddBinding.inflate(LayoutInflater.from(context))
+        // set on click Listeners
+        initListeners()
+
         val builder = AlertDialog.Builder(context)
+        builder.setTitle("Add a new word :")
         builder.setView(binding.root)
-        GlobalScope.launch {
-            initListeners()
-        }
 
         return builder.create()
     }
