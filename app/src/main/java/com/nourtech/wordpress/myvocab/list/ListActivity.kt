@@ -3,12 +3,10 @@ package com.nourtech.wordpress.myvocab.list
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nourtech.wordpress.myvocab.R
-import com.nourtech.wordpress.myvocab.list.add.AddDialog
+import com.nourtech.wordpress.myvocab.add.AddDialog
 import com.nourtech.wordpress.myvocab.databinding.ActivityListBinding
 import com.nourtech.wordpress.myvocab.db.WordEntity
 import com.nourtech.wordpress.myvocab.db.WordsDatabase
@@ -19,20 +17,27 @@ import kotlinx.coroutines.*
 class ListActivity : AppCompatActivity() {
     private lateinit var binding :ActivityListBinding
     private lateinit var recyclerView: RecyclerView
-    private val job = Job()
-    private val scope = CoroutineScope(job + Dispatchers.IO)
-    private lateinit var list  : LiveData<List<WordEntity>>
+    private lateinit var viewModel: ListViewModel
 
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // setup data binding
         binding = ActivityListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // set action bar
         setSupportActionBar(findViewById(R.id.toolbar))
         recyclerView = binding.recyclerViewWords
-        list = WordsDatabase.getInstance(application).dao.getAllLive()
-        list.observe(this, Observer<List<WordEntity>>{ newList ->
-            recyclerView.adapter = WordRecycleViewAdapter(newList)
+
+        // init view model
+        viewModel = ListViewModel.ViewModelFactory(application)
+            .create(ListViewModel::class.java)
+
+        // refresh recycler view as list changed
+        viewModel.list.observe(this, { newList ->
+            recyclerView.adapter = WordRecycleViewAdapter(newList, viewModel, applicationContext)
         })
 
         recyclerView.layoutManager = LinearLayoutManager(this)

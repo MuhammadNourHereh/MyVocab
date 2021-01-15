@@ -1,4 +1,4 @@
-package com.nourtech.wordpress.myvocab.list.add
+package com.nourtech.wordpress.myvocab.add
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -14,7 +14,7 @@ import kotlinx.coroutines.*
 
 
 class AddDialog : DialogFragment() {
-    lateinit var binding: DialogAddBinding
+    private lateinit var binding: DialogAddBinding
 
     @InternalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -31,7 +31,7 @@ class AddDialog : DialogFragment() {
     }
 
     @InternalCoroutinesApi
-    private suspend fun initListeners() {
+    private fun initListeners() {
         binding.buttonAdd.setOnClickListener {
             add()
         }
@@ -45,19 +45,18 @@ class AddDialog : DialogFragment() {
     }
 
     @InternalCoroutinesApi
-     fun add() {
+    fun add() {
+        val s1 = binding.editTextFirstLanguage.text.toString()
+        val s2 = binding.editTextSecondLanguage.text.toString()
         val job = Job()
         val scope = CoroutineScope(Dispatchers.IO + job)
         scope.launch {
             WordsDatabase.getInstance(requireContext()).dao
                 .add(
-                    WordEntity(
-                        0,
-                        binding.editTextFirstLanguage.text.toString(),
-                        binding.editTextSecondLanguage.text.toString(),
-                        false
-                    )
+                    WordEntity(0, s1, s2, false)
                 )
+            binding.editTextFirstLanguage.text.clear()
+            binding.editTextSecondLanguage.text.clear()
         }
 
     }

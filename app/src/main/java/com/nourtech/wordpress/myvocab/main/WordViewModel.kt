@@ -11,12 +11,10 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
 
     private val job = Job()
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
-
-    var list :MutableList<WordEntity> = listOf(WordEntity(0,"your list is empty", "", false)).toMutableList()
+    private var filter = false
+    private lateinit var list :MutableList<WordEntity>
     init {
-        GlobalScope.launch {
-            list = datasource.getAll().toMutableList()
-        }
+        updateList()
     }
 
     private var id = 0
@@ -45,13 +43,23 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
     }
 
     private fun update(){
-        _word.value = list[id]
+        if (list.isNotEmpty())
+            _word.value = list[id]
+        else
+            _word.value = WordEntity(0, "your list is empty",
+                "your list is empty", false)
     }
 
     fun check(b :Boolean){
+        if (list.isEmpty())
+            return
         list[id].memorized = b
+        val item = list[id]
         ioScope.launch {
-            datasource.memorize(list[id])
+            datasource.memorize(item)
+        }
+        if (filter && b){
+            list.remove(list[id])
         }
     }
     fun clear(){
@@ -76,5 +84,29 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
             update()
         }
     }
+    fun filter(checked: Boolean){
+        filter = checked
+        // remove all memorized words
+        val _list   = listOf<WordEntity>().toMutableList()
+        if (checked){
+            for (x in list){
+                if (!x.memorized){
+                    _list.add(x)
+                }
+            }
+            list = _list
+        }
 
+        // show all words
+        else{
+            updateList()
+        }
+        id = 0
+        update()
+    }
+     fun updateList(){
+        GlobalScope.launch {
+            list = datasource.getAll().toMutableList()
+        }
+    }
 }

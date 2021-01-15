@@ -48,6 +48,7 @@
             app:layout_constraintVertical_bias="0.85" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -62,14 +63,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffe6e6"
-                android:text="@{viewModel.word.lang1}" />
+                android:text="@{viewModel.word.lang1}"
+                android:textSize="36sp" />
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffe6e6"
-                android:text="@{viewModel.word.lang2}" />
+                android:text="@{viewModel.word.lang2}"
+                android:textSize="36sp" />
         </LinearLayout>
 
         <CheckBox
@@ -83,6 +86,15 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/button_previous"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButton_speaker"
+            android:layout_width="38dp"
+            android:layout_height="37dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
