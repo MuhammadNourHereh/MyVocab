@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.nourtech.wordpress.myvocab.db.WordEntity
 import com.nourtech.wordpress.myvocab.db.WordsDAO
 import com.nourtech.wordpress.myvocab.db.WordsDatabase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-@InternalCoroutinesApi
+
 class ListViewModel(private var datasource: WordsDAO, application: Application) : ViewModel() {
 
 
@@ -18,7 +21,7 @@ class ListViewModel(private var datasource: WordsDAO, application: Application) 
         private val application: Application
     ) : ViewModelProvider.Factory {
 
-        @InternalCoroutinesApi
+
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
 

@@ -19,6 +19,9 @@
         android:id="@+id/menuItem_clear"
         android:title="@string/clear" />
     <item
+        android:id="@+id/menuItem_settings"
+        android:title="@string/settings" />
+    <item
         android:id="@+id/menuItem_exit"
         android:title="@string/exit" />
 </menu>

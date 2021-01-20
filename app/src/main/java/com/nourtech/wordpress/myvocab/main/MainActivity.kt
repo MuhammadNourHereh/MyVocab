@@ -12,7 +12,8 @@ import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.add.AddDialog
 import com.nourtech.wordpress.myvocab.databinding.ActivityMainBinding
 import com.nourtech.wordpress.myvocab.list.ListActivity
-import kotlinx.coroutines.InternalCoroutinesApi
+import com.nourtech.wordpress.myvocab.settings.SettingsActivity
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tts: TextToSpeech
 
-    @InternalCoroutinesApi
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,11 +38,16 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // inflate layout
         setContentView(binding.root)
 
+        // init tts
+        tts = TextToSpeech(this, this)
+
         // make textView2 invisible
         binding.textView2.visibility = View.INVISIBLE
 
-        // init tts
-        tts = TextToSpeech(this, this)
+        // observe for check box
+        viewModel.empty.observe(this) {
+            binding.checkBoxMemorized.visibility = if (!it) View.VISIBLE else View.INVISIBLE
+        }
 
         // set listeners
         setListeners()
@@ -52,12 +58,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         viewModel.updateList()
     }
 
-    @InternalCoroutinesApi
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.mainactivity_meny, menu)
+        menuInflater.inflate(R.menu.mainactivity_menu, menu)
         menu?.findItem(R.id.menuItem_add)?.setOnMenuItemClickListener {
-            val dialog = AddDialog()
-            dialog.show(supportFragmentManager, null)
+            runBlocking {
+                val dialog = AddDialog()
+                dialog.show(supportFragmentManager, null)
+            }
+
             viewModel.updateList()
             true
         }
@@ -78,6 +87,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         menu?.findItem(R.id.menuItem_shuffle)?.setOnMenuItemClickListener {
             viewModel.shuffle()
             viewModel.updateList()
+            true
+        }
+        menu?.findItem(R.id.menuItem_settings)?.setOnMenuItemClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
             true
         }
         menu?.findItem(R.id.menuItem_exit)?.setOnMenuItemClickListener {
@@ -115,9 +128,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if (status == TextToSpeech.SUCCESS) {
             val result = tts.setLanguage(Locale.US)
 
-            // tts.setPitch(5); // set pitch level
-
-            // tts.setSpeechRate(2); // set speech speed rate
             if (result == TextToSpeech.LANG_MISSING_DATA
                 || result == TextToSpeech.LANG_NOT_SUPPORTED
             ) {

@@ -2,7 +2,6 @@ package com.nourtech.wordpress.myvocab.list
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.db.WordEntity
-import kotlinx.coroutines.InternalCoroutinesApi
 
 
-@InternalCoroutinesApi
 class WordRecycleViewAdapter(
     private val wordList: List<WordEntity>,
     private val viewModel: ListViewModel,

@@ -7,72 +7,103 @@ import com.nourtech.wordpress.myvocab.db.WordEntity
 import com.nourtech.wordpress.myvocab.db.WordsDAO
 import kotlinx.coroutines.*
 
-class WordViewModel(private var datasource: WordsDAO, application: Application) : androidx.lifecycle.AndroidViewModel(application) {
+class WordViewModel(private var datasource: WordsDAO, application: Application) :
+    androidx.lifecycle.AndroidViewModel(application) {
 
-    private val job = Job()
-    private val ioScope = CoroutineScope(Dispatchers.IO + job)
+    private val ioScope = CoroutineScope(Dispatchers.IO)
     private var filter = false
-    private lateinit var list :MutableList<WordEntity>
+    private lateinit var list: MutableList<WordEntity>
+
+    // is list empty ?
+    private val _empty = MutableLiveData<Boolean>()
+    val empty: LiveData<Boolean>
+        get() {
+            return _empty
+        }
+
+    private var index = 0 // current word index
+    private val _word = MutableLiveData<WordEntity>()
+    val word: LiveData<WordEntity>
+        get() = _word
+
     init {
         updateList()
     }
 
-    private var id = 0
-    private val _word = MutableLiveData<WordEntity>()
-    val word : LiveData<WordEntity>
-        get () = _word
+    private fun update() {
+        if (list.isNotEmpty()) {
+            _word.value = list[index]
+            _empty.value = list.isEmpty()
+        } else {
+            _word.value = WordEntity.EmptyWord
+            _empty.value = list.isEmpty()
+        }
+    }
 
+    fun updateList() {
+        runBlocking {
+            withContext(Dispatchers.Default) {
+                list = if (filter)
+                    datasource.getAllFiltered().toMutableList()
+                else
+                    datasource.getAll().toMutableList()
+            }
 
-    fun next(){
-        if (id == list.size - 1)
-            id = 0
-        else
-            id++
+            update()
+        }
+
+    }
+
+    fun next() {
+        when {
+            // check if list is empty or has 1 element
+            (list.size in 0..1) -> {
+            }
+            (index <= list.size - 1) -> index = 0
+            else -> index++
+
+        }
         update()
     }
 
-    fun previous(){
-        if (id > 0 )
-            id--
-        // check if list is empty or has 1 element
-        else if (list.size in 0 .. 1)
-            return
-        else
-            id = list.size - 1
+    fun previous() {
+        when {
+            (index > 0) -> index--
+            // check if list is empty or has 1 element
+            (list.size in 0..1) -> {
+            }
+            else -> index = list.size - 1
+        }
         update()
+        _empty.value = list.isEmpty()
     }
 
-    private fun update(){
-        if (list.isNotEmpty())
-            _word.value = list[id]
-        else
-            _word.value = WordEntity(0, "your list is empty",
-                "your list is empty", false)
-    }
 
-    fun check(b :Boolean){
+    fun check(b: Boolean) {
         if (list.isEmpty())
             return
-        list[id].memorized = b
-        val item = list[id]
+        list[index].memorized = b
+        val item = list[index]
         ioScope.launch {
             datasource.memorize(item)
         }
-        if (filter && b){
-            list.remove(list[id])
+        if (filter && b) {
+            list.remove(list[index])
         }
     }
-    fun clear(){
+
+    fun clear() {
         ioScope.launch {
             datasource.clear()
         }
     }
-    fun shuffle(){
+
+    fun shuffle() {
         // use Fisher - Yates shuffle algorithm
-        for (i in list.size - 1 downTo  0){
+        for (i in list.size - 1 downTo 0) {
 
             // generate a random number between 0 and i
-            val r = (0 .. i).random()
+            val r = (0..i).random()
 
             // swap i and r elements
             val element = list[r]
@@ -80,33 +111,30 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
             list[i] = element
 
             // reset id and update
-            id = 0
+            index = 0
             update()
         }
     }
-    fun filter(checked: Boolean){
+
+    fun filter(checked: Boolean) {
         filter = checked
         // remove all memorized words
-        val _list   = listOf<WordEntity>().toMutableList()
-        if (checked){
-            for (x in list){
-                if (!x.memorized){
-                    _list.add(x)
+        if (checked) {
+            val shiftList = listOf<WordEntity>().toMutableList()
+            for (x in list) {
+                if (!x.memorized) {
+                    shiftList.add(x)
                 }
             }
-            list = _list
+            list = shiftList
         }
 
         // show all words
-        else{
+        else {
             updateList()
         }
-        id = 0
+        index = 0
         update()
     }
-     fun updateList(){
-        GlobalScope.launch {
-            list = datasource.getAll().toMutableList()
-        }
-    }
+
 }

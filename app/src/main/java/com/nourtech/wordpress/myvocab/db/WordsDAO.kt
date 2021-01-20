@@ -12,8 +12,11 @@ interface WordsDAO   {
     @Query("SELECT * FROM Words_List")
     fun getAllLive(): LiveData<List<WordEntity>>
 
+    @Query("SELECT * FROM Words_List WHERE memorized = 0")
+    fun getAllFiltered(): List<WordEntity>
+
     @Insert
-    fun add(word : WordEntity)
+    fun add(word: WordEntity)
 
     @Update
     fun memorize(word: WordEntity)

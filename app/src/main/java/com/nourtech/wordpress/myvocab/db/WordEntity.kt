@@ -6,11 +6,21 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Words_List")
 data class WordEntity(
-    @PrimaryKey (autoGenerate = true)
-    var id: Int,
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0,
     @ColumnInfo(name = "first_lang")
     var lang1: String,
     @ColumnInfo(name = "second_lang")
     var lang2: String,
-    @ColumnInfo(name = "memorized_lang")
-    var memorized: Boolean)
+    @ColumnInfo(name = "memorized")
+    var memorized: Boolean = false
+) {
+
+    constructor(lang1: String, lang2: String) : this(0, lang1, lang2, false)
+
+    companion object {
+        val EmptyWord = WordEntity("Word list is empty", "Word list is empty")
+    }
+
+}
+
