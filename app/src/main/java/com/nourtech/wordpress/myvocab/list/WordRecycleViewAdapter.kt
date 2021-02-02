@@ -70,6 +70,8 @@ class WordRecycleViewAdapter(
 
     }
 
+
     override fun getItemCount() = wordList.size
 
+    fun getItem(position: Int): WordEntity = wordList[position]
 }

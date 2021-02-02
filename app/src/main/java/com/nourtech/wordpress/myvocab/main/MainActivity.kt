@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // observe for check box
         viewModel.empty.observe(this) {
             binding.checkBoxMemorized.visibility = if (!it) View.VISIBLE else View.INVISIBLE
+            binding.imageButtonSpeaker.visibility = if (!it) View.VISIBLE else View.INVISIBLE
         }
 
         // set listeners
@@ -139,6 +140,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             Log.e("TTS", "Initialization Failed")
         }
     }
+
 
     private fun speakOut() {
         val text: String = viewModel.word.value?.lang1.toString()

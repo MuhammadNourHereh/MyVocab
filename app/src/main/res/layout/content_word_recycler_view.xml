@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card"
     android:layout_width="match_parent"
-
     android:layout_height="wrap_content"
-    android:longClickable="true"
-    android:orientation="vertical"
-    android:paddingBottom="8dp">
+    android:layout_margin="10dp"
+    android:background="#F8BBD0">
 
-    <TextView
-        android:id="@+id/lang1TextView"
+    <LinearLayout
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffe6e6"
-        android:padding="8dp"
-        tools:text="first language" />
+        android:longClickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
 
-    <TextView
-        android:id="@+id/lang2TextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffe6e6"
-        android:padding="8dp"
-        tools:text="second language" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/lang1TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            tools:text="first language" />
+
+        <TextView
+            android:id="@+id/lang2TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            tools:text="second language" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

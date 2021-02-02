@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nourtech.wordpress.myvocab.db.WordEntity
 import com.nourtech.wordpress.myvocab.db.WordsDAO
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WordViewModel(private var datasource: WordsDAO, application: Application) :
     androidx.lifecycle.AndroidViewModel(application) {
@@ -41,15 +44,16 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
     }
 
     fun updateList() {
-        runBlocking {
-            withContext(Dispatchers.Default) {
-                list = if (filter)
-                    datasource.getAllFiltered().toMutableList()
-                else
-                    datasource.getAll().toMutableList()
-            }
+        ioScope.launch {
 
-            update()
+            list = if (filter)
+                datasource.getAllFiltered().toMutableList()
+            else
+                datasource.getAll().toMutableList()
+
+            withContext(Dispatchers.Main) {
+                update()
+            }
         }
 
     }
@@ -59,9 +63,8 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
             // check if list is empty or has 1 element
             (list.size in 0..1) -> {
             }
-            (index <= list.size - 1) -> index = 0
+            (index >= list.size - 1) -> index = 0
             else -> index++
-
         }
         update()
     }
