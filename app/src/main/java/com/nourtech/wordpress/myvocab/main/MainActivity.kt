@@ -13,7 +13,6 @@ import com.nourtech.wordpress.myvocab.add.AddDialog
 import com.nourtech.wordpress.myvocab.databinding.ActivityMainBinding
 import com.nourtech.wordpress.myvocab.list.ListActivity
 import com.nourtech.wordpress.myvocab.settings.SettingsActivity
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
@@ -63,12 +62,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.mainactivity_menu, menu)
         menu?.findItem(R.id.menuItem_add)?.setOnMenuItemClickListener {
-            runBlocking {
-                val dialog = AddDialog()
-                dialog.show(supportFragmentManager, null)
-            }
 
-            viewModel.updateList()
+            val dialog = AddDialog()
+            dialog.show(supportFragmentManager, null)
+
             true
         }
         menu?.findItem(R.id.menuItem_filter)?.setOnMenuItemClickListener {

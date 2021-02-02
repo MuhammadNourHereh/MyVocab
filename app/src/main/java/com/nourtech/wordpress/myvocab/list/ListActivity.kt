@@ -22,6 +22,7 @@ class ListActivity : AppCompatActivity() {
 
         // setup data binding
         binding = ActivityListBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
 
         // set action bar
@@ -36,9 +37,11 @@ class ListActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // refresh recycler view as list changed
-        viewModel.list.observe(this, { newList ->
-            recyclerView.adapter =
-                WordRecycleViewAdapter(newList, viewModel, supportFragmentManager)
+        viewModel.list.observe(this, {
+            if (recyclerView.adapter == null)
+                recyclerView.adapter = WordRecycleViewAdapter(it)
+            else
+                (recyclerView.adapter as WordRecycleViewAdapter).updateList(it)
         })
 
         binding.fab.setOnClickListener {

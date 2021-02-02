@@ -2,28 +2,30 @@ package com.nourtech.wordpress.myvocab.add
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.nourtech.wordpress.myvocab.databinding.DialogAddBinding
 import com.nourtech.wordpress.myvocab.db.WordEntity
 import com.nourtech.wordpress.myvocab.db.WordsDatabase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class AddDialog : DialogFragment() {
     private lateinit var binding: DialogAddBinding
 
-    @InternalCoroutinesApi
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
+
+        // setup data binding
         binding = DialogAddBinding.inflate(LayoutInflater.from(context))
+
         // set on click Listeners
         initListeners()
 
+        // build dialog
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Add a new word :")
         builder.setView(binding.root)
@@ -31,7 +33,7 @@ class AddDialog : DialogFragment() {
         return builder.create()
     }
 
-    @InternalCoroutinesApi
+
     private fun initListeners() {
         binding.buttonAdd.setOnClickListener {
             add()
@@ -45,21 +47,20 @@ class AddDialog : DialogFragment() {
         }
     }
 
-    @InternalCoroutinesApi
     fun add() {
         val s1 = binding.editTextFirstLanguage.text.toString()
         val s2 = binding.editTextSecondLanguage.text.toString()
-        val job = Job()
-        val scope = CoroutineScope(Dispatchers.IO + job)
-        scope.launch {
+
+        if (s1.isEmpty() || s2.isEmpty())
+            return
+
+        CoroutineScope(Dispatchers.IO).launch {
             WordsDatabase.getInstance(requireContext()).dao
-                .add(
-                    WordEntity(0, s1, s2, false)
-                )
-            binding.editTextFirstLanguage.text.clear()
-            binding.editTextSecondLanguage.text.clear()
+                .add(WordEntity(s1, s2))
         }
 
+        binding.editTextFirstLanguage.text.clear()
+        binding.editTextSecondLanguage.text.clear()
     }
 
 }
