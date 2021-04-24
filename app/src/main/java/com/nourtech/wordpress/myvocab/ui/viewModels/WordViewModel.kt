@@ -1,17 +1,20 @@
-package com.nourtech.wordpress.myvocab.main
+package com.nourtech.wordpress.myvocab.ui.viewModels
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nourtech.wordpress.myvocab.db.WordEntity
-import com.nourtech.wordpress.myvocab.db.WordsDAO
+import com.nourtech.wordpress.myvocab.repositories.MainRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class WordViewModel(private var datasource: WordsDAO, application: Application) :
-    androidx.lifecycle.AndroidViewModel(application) {
+class WordViewModel
+@Inject constructor(private var repo: MainRepository, application: Application) :
+    AndroidViewModel(application) {
 
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private var filter = false
@@ -47,9 +50,9 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
         ioScope.launch {
 
             list = if (filter)
-                datasource.getAllFiltered().toMutableList()
+                repo.getAllFilteredWords().toMutableList()
             else
-                datasource.getAll().toMutableList()
+                repo.getAllWords().toMutableList()
 
             withContext(Dispatchers.Main) {
                 update()
@@ -88,7 +91,7 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
         list[index].memorized = b
         val item = list[index]
         ioScope.launch {
-            datasource.memorize(item)
+            repo.memorizeWord(item)
         }
         if (filter && b) {
             list.remove(list[index])
@@ -97,7 +100,7 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
 
     fun clear() {
         ioScope.launch {
-            datasource.clear()
+            repo.clearWords()
         }
     }
 
@@ -138,6 +141,19 @@ class WordViewModel(private var datasource: WordsDAO, application: Application) 
         }
         index = 0
         update()
+    }
+
+    // live list of words
+    val lifeDataList: LiveData<List<WordEntity>> = repo.getAllLiveWords()
+
+    fun deleteWord(word: WordEntity) {
+        ioScope.launch {
+            repo.deleteWord(word)
+        }
+    }
+
+    fun addWord(wordEntity: WordEntity) {
+        repo.addWord(wordEntity)
     }
 
 }

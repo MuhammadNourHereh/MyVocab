@@ -1,4 +1,4 @@
-package com.nourtech.wordpress.myvocab.add
+package com.nourtech.wordpress.myvocab.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -7,14 +7,19 @@ import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
 import com.nourtech.wordpress.myvocab.databinding.DialogAddBinding
 import com.nourtech.wordpress.myvocab.db.WordEntity
-import com.nourtech.wordpress.myvocab.db.WordsDatabase
+import com.nourtech.wordpress.myvocab.ui.viewModels.WordViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class AddDialog : DialogFragment() {
     private lateinit var binding: DialogAddBinding
+
+    @Inject
+    lateinit var viewModel: WordViewModel
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
@@ -55,8 +60,7 @@ class AddDialog : DialogFragment() {
             return
 
         CoroutineScope(Dispatchers.IO).launch {
-            WordsDatabase.getInstance(requireContext()).dao
-                .add(WordEntity(s1, s2))
+            viewModel.addWord(WordEntity(s1, s2))
         }
 
         binding.editTextFirstLanguage.text.clear()

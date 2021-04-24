@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/wordsFragment">
+
+    <fragment
+        android:id="@+id/wordsFragment"
+        android:name="com.nourtech.wordpress.myvocab.ui.fragments.WordsFragment"
+        android:label="WordsFragment">
+        <action
+            android:id="@+id/action_wordsFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addFragment"
+        android:name="com.nourtech.wordpress.myvocab.ui.fragments.ListFragment"
+        android:label="AddFragment" />
+</navigation>

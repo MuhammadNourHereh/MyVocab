@@ -1,43 +1,40 @@
-package com.nourtech.wordpress.myvocab.list
+package com.nourtech.wordpress.myvocab.ui.fragments
 
 import android.os.Bundle
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.nourtech.wordpress.myvocab.R
-import com.nourtech.wordpress.myvocab.add.AddDialog
-import com.nourtech.wordpress.myvocab.databinding.ActivityListBinding
+import com.nourtech.wordpress.myvocab.adapters.WordRecycleViewAdapter
+import com.nourtech.wordpress.myvocab.databinding.FragmentListBinding
+import com.nourtech.wordpress.myvocab.dialogs.AddDialog
+import com.nourtech.wordpress.myvocab.ui.viewModels.WordViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class ListFragment : Fragment(R.layout.fragment_list) {
 
-class ListActivity : AppCompatActivity() {
-    private lateinit var binding :ActivityListBinding
+    private lateinit var binding: FragmentListBinding
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewModel: ListViewModel
 
+    @Inject
+    lateinit var viewModel: WordViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // setup data binding
-        binding = ActivityListBinding.inflate(layoutInflater)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentListBinding.bind(view)
         binding.lifecycleOwner = this
-        setContentView(binding.root)
-
-        // set action bar
-        setSupportActionBar(findViewById(R.id.toolbar))
-
-        // init view model
-        viewModel = ListViewModel.ViewModelFactory(application)
-            .create(ListViewModel::class.java)
 
         // set recyclerView
         recyclerView = binding.recyclerViewWords
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // refresh recycler view as list changed
-        viewModel.list.observe(this, {
+        viewModel.lifeDataList.observe(viewLifecycleOwner, {
             if (recyclerView.adapter == null)
                 recyclerView.adapter = WordRecycleViewAdapter(it)
             else
@@ -46,7 +43,7 @@ class ListActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener {
             val dialog = AddDialog()
-            dialog.show(supportFragmentManager, null)
+            dialog.show(parentFragmentManager, null)
         }
 
         // set swipe for recycler view
@@ -67,11 +64,14 @@ class ListActivity : AppCompatActivity() {
                     .getItem(viewHolder.adapterPosition)
                 viewModel.deleteWord(word)
                 binding.recyclerViewWords.adapter?.notifyDataSetChanged()
-                Toast.makeText(baseContext, "word " + word.lang1 + " deleted", Toast.LENGTH_SHORT)
+                Snackbar.make(
+                    requireView(),
+                    "word " + word.lang1 + " deleted",
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
             }
         }
         ItemTouchHelper(callback).attachToRecyclerView(binding.recyclerViewWords)
     }
 }
-

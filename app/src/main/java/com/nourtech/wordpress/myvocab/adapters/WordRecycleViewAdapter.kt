@@ -1,4 +1,4 @@
-package com.nourtech.wordpress.myvocab.list
+package com.nourtech.wordpress.myvocab.adapters
 
 import android.view.LayoutInflater
 import android.view.View
