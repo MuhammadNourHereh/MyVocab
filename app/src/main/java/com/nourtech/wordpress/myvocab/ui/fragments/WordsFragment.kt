@@ -4,10 +4,14 @@ import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.databinding.FragmentWordsBinding
+import com.nourtech.wordpress.myvocab.dialogs.AddDialog
 import com.nourtech.wordpress.myvocab.ui.viewModels.WordViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -17,8 +21,6 @@ import javax.inject.Inject
 class WordsFragment : Fragment(R.layout.fragment_words) {
 
     private lateinit var binding: FragmentWordsBinding
-
-
     private lateinit var tts: TextToSpeech
 
     @Inject
@@ -46,29 +48,70 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
 
         // set listeners
         setListeners()
+
+        // setup option menu
+        setHasOptionsMenu(true)
     }
 
-    private fun setListeners() {
-        binding.buttonNext.setOnClickListener {
-            viewModel.next()
-            binding.textView2.visibility = View.INVISIBLE
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.mainactivity_menu, menu)
+        menu.findItem(R.id.menuItem_add).setOnMenuItemClickListener {
+            val dialog = AddDialog()
+            dialog.show(parentFragmentManager, null)
+            true
         }
-        binding.buttonPrevious.setOnClickListener {
-            viewModel.previous()
-            binding.textView2.visibility = View.INVISIBLE
+        menu.findItem(R.id.menuItem_filter).setOnMenuItemClickListener {
+            it.isChecked = !it.isChecked
+            viewModel.filter(it.isChecked)
+            true
         }
-        binding.checkBoxMemorized.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.check(
-                isChecked
+        menu.findItem(R.id.menuItem_list).setOnMenuItemClickListener {
+            findNavController().navigate(
+                R.id.action_wordsFragment_to_addFragment
             )
+            true
         }
-        binding.buttonShow.setOnClickListener {
-            binding.textView2.visibility = View.VISIBLE
+        menu.findItem(R.id.menuItem_clear).setOnMenuItemClickListener {
+            viewModel.clear()
+            viewModel.updateList()
+            true
         }
-        binding.imageButtonSpeaker.setOnClickListener {
+        menu.findItem(R.id.menuItem_shuffle).setOnMenuItemClickListener {
+            viewModel.shuffle()
+            viewModel.updateList()
+            true
+        }
+        menu.findItem(R.id.menuItem_settings).setOnMenuItemClickListener {
+            true
+        }
+        menu.findItem(R.id.menuItem_exit).setOnMenuItemClickListener {
+            requireActivity().finish()
+            true
+        }
+
+    }
+
+    private fun setListeners() = binding.apply {
+        buttonNext.setOnClickListener {
+            viewModel?.next()
+            binding.textView2.visibility = View.INVISIBLE
+        }
+        buttonPrevious.setOnClickListener {
+            viewModel?.previous()
+            textView2.visibility = View.INVISIBLE
+        }
+        checkBoxMemorized.setOnCheckedChangeListener { _, isChecked ->
+            viewModel?.check(isChecked)
+        }
+        buttonShow.setOnClickListener {
+            textView2.visibility = View.VISIBLE
+        }
+        imageButtonSpeaker.setOnClickListener {
             speakOut()
         }
     }
+
 
     // for tts
     private val onInitListener = TextToSpeech.OnInitListener { status ->
@@ -92,6 +135,7 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
         } else {
+            @Suppress("DEPRECATION")
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null)
         }
     }

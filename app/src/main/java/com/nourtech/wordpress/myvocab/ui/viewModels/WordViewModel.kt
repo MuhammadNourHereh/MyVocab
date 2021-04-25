@@ -12,9 +12,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class WordViewModel
-@Inject constructor(private var repo: MainRepository, application: Application) :
-    AndroidViewModel(application) {
+class WordViewModel @Inject constructor(
+    private var repo: MainRepository,
+    application: Application
+) : AndroidViewModel(application) {
 
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private var filter = false
