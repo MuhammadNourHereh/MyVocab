@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.databinding.FragmentWordsBinding
 import com.nourtech.wordpress.myvocab.dialogs.AddDialog
-import com.nourtech.wordpress.myvocab.ui.viewModels.WordViewModel
+import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
     private lateinit var tts: TextToSpeech
 
     @Inject
-    lateinit var viewModel: WordViewModel
+    lateinit var viewModel: MainViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,12 +74,10 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
         }
         menu.findItem(R.id.menuItem_clear).setOnMenuItemClickListener {
             viewModel.clear()
-            viewModel.updateList()
             true
         }
         menu.findItem(R.id.menuItem_shuffle).setOnMenuItemClickListener {
             viewModel.shuffle()
-            viewModel.updateList()
             true
         }
         menu.findItem(R.id.menuItem_settings).setOnMenuItemClickListener {

@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
 import com.nourtech.wordpress.myvocab.databinding.DialogAddBinding
 import com.nourtech.wordpress.myvocab.db.WordEntity
-import com.nourtech.wordpress.myvocab.ui.viewModels.WordViewModel
+import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +19,7 @@ class AddDialog : DialogFragment() {
     private lateinit var binding: DialogAddBinding
 
     @Inject
-    lateinit var viewModel: WordViewModel
+    lateinit var viewModel: MainViewModel
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)

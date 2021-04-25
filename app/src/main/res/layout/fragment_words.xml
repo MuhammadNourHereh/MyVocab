@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.nourtech.wordpress.myvocab.ui.viewModels.WordViewModel" />
+            type="com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

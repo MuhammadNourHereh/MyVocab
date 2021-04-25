@@ -11,7 +11,7 @@ import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.adapters.WordRecycleViewAdapter
 import com.nourtech.wordpress.myvocab.databinding.FragmentListBinding
 import com.nourtech.wordpress.myvocab.dialogs.AddDialog
-import com.nourtech.wordpress.myvocab.ui.viewModels.WordViewModel
+import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private lateinit var recyclerView: RecyclerView
 
     @Inject
-    lateinit var viewModel: WordViewModel
+    lateinit var viewModel: MainViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
