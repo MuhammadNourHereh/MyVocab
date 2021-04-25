@@ -43,9 +43,7 @@
             android:contentDescription="@string/content_description_add_new_word"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/outline_add_circle_24"
-            tools:layout_conversion_absoluteHeight="56dp"
-            tools:layout_conversion_absoluteWidth="56dp" />
+            app:srcCompat="@drawable/outline_add_circle_48" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

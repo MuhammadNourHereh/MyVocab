@@ -34,8 +34,6 @@ class MainViewModel @Inject constructor(
     val word: LiveData<Word>
         get() = _word
 
-    val lifeDataList: LiveData<List<WordEntity>> = repo.getAllLiveWords()
-
     init {
         updateList()
     }
@@ -55,6 +53,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun lifeWordsList() = repo.getAllLiveWords()
+
     fun next() {
         wordsList.next()
         update()
@@ -69,14 +69,29 @@ class MainViewModel @Inject constructor(
         if (wordsList.isEmpty())
             return
 
-        // update db
         val item = WordEntity(wordsList.get())
         item.memorized = b
 
         wordsList.check(b)
 
+        // update db
         ioScope.launch {
             repo.memorizeWord(item)
+        }
+
+    }
+
+    fun check(wordId: Int, checked: Boolean) {
+
+        val item = wordsList.get(wordId)?.let { WordEntity(it) } ?: return
+        item.memorized = checked
+
+        wordsList.check(checked)
+
+        // update db
+        ioScope.launch {
+            repo.memorizeWord(item)
+            updateList()
         }
 
     }
@@ -125,5 +140,4 @@ class MainViewModel @Inject constructor(
 
         _empty.value = wordsList.isEmpty()
     }
-
 }

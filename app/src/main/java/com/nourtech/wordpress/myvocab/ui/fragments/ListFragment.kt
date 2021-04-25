@@ -33,12 +33,12 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // refresh recycler view as list changed
-        viewModel.lifeDataList.observe(viewLifecycleOwner, {
+        viewModel.lifeWordsList().observe(viewLifecycleOwner) {
             if (recyclerView.adapter == null)
-                recyclerView.adapter = WordRecycleViewAdapter(it)
+                recyclerView.adapter = WordRecycleViewAdapter(it, viewModel)
             else
                 (recyclerView.adapter as WordRecycleViewAdapter).updateList(it)
-        })
+        }
 
         binding.fab.setOnClickListener {
             val dialog = AddDialog()

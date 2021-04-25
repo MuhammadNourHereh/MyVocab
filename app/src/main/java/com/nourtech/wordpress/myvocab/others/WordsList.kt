@@ -64,6 +64,10 @@ class WordsList {
     fun isEmpty() = list.isEmpty()
     fun isNotEmpty() = list.isNotEmpty()
     fun get() = list[index]
+    fun get(id: Int) = list.find {
+        it.id == id
+    }
+
     fun setList(list: List<WordEntity>) {
 
         this.list = list.map {
