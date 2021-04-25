@@ -6,8 +6,10 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.databinding.FragmentWordsBinding
@@ -15,7 +17,6 @@ import com.nourtech.wordpress.myvocab.dialogs.AddDialog
 import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class WordsFragment : Fragment(R.layout.fragment_words) {
@@ -23,13 +24,14 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
     private lateinit var binding: FragmentWordsBinding
     private lateinit var tts: TextToSpeech
 
-    @Inject
-    lateinit var viewModel: MainViewModel
+
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // setup data binding
+        viewModel
         binding = FragmentWordsBinding.bind(view)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -55,39 +57,40 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.mainactivity_menu, menu)
-        menu.findItem(R.id.menuItem_add).setOnMenuItemClickListener {
-            val dialog = AddDialog()
-            dialog.show(parentFragmentManager, null)
-            true
-        }
-        menu.findItem(R.id.menuItem_filter).setOnMenuItemClickListener {
-            it.isChecked = !it.isChecked
-            viewModel.filter(it.isChecked)
-            true
-        }
-        menu.findItem(R.id.menuItem_list).setOnMenuItemClickListener {
-            findNavController().navigate(
-                R.id.action_wordsFragment_to_addFragment
-            )
-            true
-        }
-        menu.findItem(R.id.menuItem_clear).setOnMenuItemClickListener {
-            viewModel.clear()
-            true
-        }
-        menu.findItem(R.id.menuItem_shuffle).setOnMenuItemClickListener {
-            viewModel.shuffle()
-            true
-        }
-        menu.findItem(R.id.menuItem_settings).setOnMenuItemClickListener {
-            true
-        }
-        menu.findItem(R.id.menuItem_exit).setOnMenuItemClickListener {
-            requireActivity().finish()
-            true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            R.id.menuItem_add -> {
+                val dialog = AddDialog()
+                dialog.show(parentFragmentManager, null)
+            }
+            R.id.menuItem_filter -> {
+                item.isChecked = !item.isChecked
+                viewModel.filter(item.isChecked)
+            }
+            R.id.menuItem_list -> {
+                findNavController().navigate(
+                    R.id.action_wordsFragment_to_addFragment
+                )
+            }
+            R.id.menuItem_clear -> {
+                viewModel.clear()
+            }
+            R.id.menuItem_shuffle -> {
+                viewModel.shuffle()
+            }
+            R.id.menuItem_settings -> {
+            }
+            R.id.menuItem_exit -> {
+                requireActivity().finish()
+            }
         }
 
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setListeners() = binding.apply {
@@ -109,7 +112,6 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
             speakOut()
         }
     }
-
 
     // for tts
     private val onInitListener = TextToSpeech.OnInitListener { status ->

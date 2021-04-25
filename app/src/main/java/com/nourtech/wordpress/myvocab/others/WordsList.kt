@@ -36,6 +36,7 @@ class WordsList {
 
         if (filter && b) {
             list.remove(item)
+            previous()
         }
     }
 

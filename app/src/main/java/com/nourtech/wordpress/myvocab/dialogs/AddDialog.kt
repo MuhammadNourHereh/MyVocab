@@ -5,21 +5,17 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.nourtech.wordpress.myvocab.databinding.DialogAddBinding
 import com.nourtech.wordpress.myvocab.db.WordEntity
 import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddDialog : DialogFragment() {
     private lateinit var binding: DialogAddBinding
 
-    @Inject
-    lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
@@ -52,16 +48,14 @@ class AddDialog : DialogFragment() {
         }
     }
 
-    fun add() {
+    private fun add() {
         val s1 = binding.editTextFirstLanguage.text.toString()
         val s2 = binding.editTextSecondLanguage.text.toString()
 
         if (s1.isEmpty() || s2.isEmpty())
             return
 
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.addWord(WordEntity(s1, s2))
-        }
+        viewModel.addWord(WordEntity(s1, s2))
 
         binding.editTextFirstLanguage.text.clear()
         binding.editTextSecondLanguage.text.clear()

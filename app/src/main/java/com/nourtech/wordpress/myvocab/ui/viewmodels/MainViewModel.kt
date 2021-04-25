@@ -8,12 +8,14 @@ import com.nourtech.wordpress.myvocab.others.EmptyWord
 import com.nourtech.wordpress.myvocab.others.WordsList
 import com.nourtech.wordpress.myvocab.pojo.Word
 import com.nourtech.wordpress.myvocab.repositories.MainRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@HiltViewModel
 class MainViewModel @Inject constructor(
     private var repo: MainRepository
 ) : ViewModel() {
@@ -41,11 +43,16 @@ class MainViewModel @Inject constructor(
     fun deleteWord(word: WordEntity) {
         ioScope.launch {
             repo.deleteWord(word)
+            updateList()
         }
+
     }
 
     fun addWord(wordEntity: WordEntity) {
-        repo.addWord(wordEntity)
+        ioScope.launch {
+            repo.addWord(wordEntity)
+            updateList()
+        }
     }
 
     fun next() {
@@ -62,10 +69,12 @@ class MainViewModel @Inject constructor(
         if (wordsList.isEmpty())
             return
 
-        wordsList.check(b)
-
         // update db
         val item = WordEntity(wordsList.get())
+        item.memorized = b
+
+        wordsList.check(b)
+
         ioScope.launch {
             repo.memorizeWord(item)
         }

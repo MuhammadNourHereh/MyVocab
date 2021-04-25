@@ -3,6 +3,7 @@ package com.nourtech.wordpress.myvocab.ui.fragments
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,6 @@ import com.nourtech.wordpress.myvocab.databinding.FragmentListBinding
 import com.nourtech.wordpress.myvocab.dialogs.AddDialog
 import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -21,8 +21,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private lateinit var binding: FragmentListBinding
     private lateinit var recyclerView: RecyclerView
 
-    @Inject
-    lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
