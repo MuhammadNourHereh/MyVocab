@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel" />
@@ -12,7 +11,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
         tools:context=".ui.MainActivity">
 
         <Button
@@ -64,7 +62,6 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ffe6e6"
                 android:text="@{viewModel.word.lang1}"
                 android:textSize="36sp" />
 
@@ -72,7 +69,6 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ffe6e6"
                 android:text="@{viewModel.word.lang2}"
                 android:textSize="36sp" />
         </LinearLayout>
