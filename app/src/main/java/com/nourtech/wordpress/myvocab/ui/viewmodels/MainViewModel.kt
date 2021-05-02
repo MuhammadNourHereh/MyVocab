@@ -133,9 +133,9 @@ class MainViewModel @Inject constructor(
 
     private fun update() {
         if (wordsList.isNotEmpty()) {
-            _word.value = wordsList.get()
+            _word.postValue(wordsList.get())
         } else {
-            _word.value = EmptyWord
+            _word.postValue(EmptyWord)
         }
 
         _empty.value = wordsList.isEmpty()

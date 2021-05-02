@@ -30,5 +30,4 @@ object Module {
     fun provideDao(db: WordsDatabase) =
         db.dao
 
-
 }

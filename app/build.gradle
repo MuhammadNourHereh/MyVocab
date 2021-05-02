@@ -18,6 +18,7 @@ android {
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -48,6 +49,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "androidx.multidex:multidex:2.0.1"
 
     // coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
@@ -79,6 +81,9 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // firebase
-    implementation 'com.google.firebase:firebase-auth:20.0.4'
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    implementation 'com.google.firebase:firebase-auth-ktx:20.0.4'
+    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
 }
