@@ -58,7 +58,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
-
     // test
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -82,8 +81,9 @@ dependencies {
 
     // firebase
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
-    implementation 'com.google.firebase:firebase-auth-ktx:20.0.4'
-    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
+    implementation 'com.google.firebase:firebase-auth-ktx:20.0.4'
+    implementation 'com.google.firebase:firebase-firestore-ktx:22.1.2'
 
 }

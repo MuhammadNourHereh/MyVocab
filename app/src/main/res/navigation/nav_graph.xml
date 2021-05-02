@@ -11,9 +11,16 @@
         <action
             android:id="@+id/action_wordsFragment_to_addFragment"
             app:destination="@id/addFragment" />
+        <action
+            android:id="@+id/action_wordsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
         android:name="com.nourtech.wordpress.myvocab.ui.fragments.ListFragment"
         android:label="AddFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.nourtech.wordpress.myvocab.ui.fragments.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

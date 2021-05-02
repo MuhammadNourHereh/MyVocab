@@ -41,4 +41,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="login">login</string>
     <string name="content_description_add_new_word">Add new word</string>
+    <string name="settings">settings</string>
+    <string name="change">change</string>
 </resources>

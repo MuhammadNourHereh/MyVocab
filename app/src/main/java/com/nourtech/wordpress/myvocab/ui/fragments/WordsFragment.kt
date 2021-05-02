@@ -122,6 +122,13 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
+            R.id.menuItem_login -> {
+                if (auth.currentUser == null) {
+                    logIn()
+                } else {
+                    signOut()
+                }
+            }
             R.id.menuItem_add -> {
                 val dialog = AddDialog()
                 dialog.show(parentFragmentManager, null)
@@ -141,12 +148,10 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
             R.id.menuItem_shuffle -> {
                 viewModel.shuffle()
             }
-            R.id.menuItem_login -> {
-                if (auth.currentUser == null) {
-                    logIn()
-                } else {
-                    signOut()
-                }
+            R.id.menuItem_settings -> {
+                findNavController().navigate(
+                    R.id.action_wordsFragment_to_settingsFragment
+                )
             }
             R.id.menuItem_exit -> {
                 requireActivity().finish()
