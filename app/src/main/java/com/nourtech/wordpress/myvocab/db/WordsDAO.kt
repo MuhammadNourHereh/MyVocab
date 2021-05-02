@@ -15,8 +15,8 @@ interface WordsDAO   {
     @Query("SELECT * FROM Words_List WHERE memorized = 0")
     fun getAllFiltered(): List<WordEntity>
 
-    @Insert
-    fun add(word: WordEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun add(word: WordEntity): Long
 
     @Update
     fun memorize(word: WordEntity)

@@ -28,9 +28,11 @@ class WordRecycleViewAdapter(
         binding.tvLang1.text = wordList[position].lang1
         binding.tvLang2.text = wordList[position].lang2
         binding.cbMemorized.isChecked = wordList[position].memorized
+
         binding.cbMemorized.setOnCheckedChangeListener { _, isChecked ->
             viewModel.check(wordList[position].id, isChecked)
         }
+
     }
 
     override fun getItemCount() = wordList.size

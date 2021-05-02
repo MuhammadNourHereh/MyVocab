@@ -54,7 +54,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun lifeWordsList() = repo.getAllLiveWords()
-
+    fun getAllWords() = repo.getAllWords()
     fun next() {
         wordsList.next()
         update()
