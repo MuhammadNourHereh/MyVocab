@@ -62,13 +62,11 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                 val word = (binding.recyclerViewWords.adapter as WordRecycleViewAdapter)
                     .getItem(viewHolder.adapterPosition)
                 viewModel.deleteWord(word)
-                binding.recyclerViewWords.adapter?.notifyDataSetChanged()
                 Snackbar.make(
                     requireView(),
                     "word " + word.lang1 + " deleted",
                     Snackbar.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
             }
         }
         ItemTouchHelper(callback).attachToRecyclerView(binding.recyclerViewWords)

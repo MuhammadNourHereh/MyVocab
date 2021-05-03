@@ -7,11 +7,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nourtech.wordpress.myvocab.R
 import com.nourtech.wordpress.myvocab.databinding.FragmentSettingsBinding
 import com.nourtech.wordpress.myvocab.db.WordEntity
-import com.nourtech.wordpress.myvocab.others.*
+import com.nourtech.wordpress.myvocab.others.KEY_LANG1
+import com.nourtech.wordpress.myvocab.others.KEY_LANG2
+import com.nourtech.wordpress.myvocab.others.KEY_MEMORIZED
+import com.nourtech.wordpress.myvocab.others.KEY_REALTIME_UPDATE
 import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -62,11 +66,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun changeName(userName: String) {
-        val docPath = "/users/${user!!.uid}"
-        firestore.document(docPath).update(
-            mapOf(Pair(key_USERNAME, userName))
-        ).addOnSuccessListener {
-            snackMassage("userName Changed $userName")
+        user!!.updateProfile(
+            userProfileChangeRequest { displayName = userName }
+        ).addOnCompleteListener {
+            if (it.isSuccessful) {
+                snackMassage("userName Changed $userName")
+            } else
+                snackMassage("failure")
         }
     }
 

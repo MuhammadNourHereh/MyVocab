@@ -50,18 +50,30 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
             val user = auth.currentUser
             user?.let {
                 Log.d("auth", "auth success: " + user.email)
+                val name = user.displayName
                 val email = user.email
-                userName.postValue(email)
+                if (name?.isNotBlank() == true) {
+                    userName.postValue(name)
+                } else {
+                    userName.postValue(email)
+                }
             }
         }
         // setup login
-        auth.currentUser.let {
-            val login = if (it == null)
-                resources.getString(R.string.login)
-            else
-                it.email
+        auth.currentUser?.let {
+            val name = it.displayName
+            val email = it.email
+            if (name?.isNotBlank() == true) {
+                userName.postValue(name)
+            } else {
+                userName.postValue(email)
+            }
+        } ?: run {
+            val login = resources.getString(R.string.login)
             userName.postValue(login)
         }
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
