@@ -28,16 +28,9 @@ class WordRecycleViewAdapter(
         binding.tvLang1.text = wordList[position].lang1
         binding.tvLang2.text = wordList[position].lang2
         binding.cbMemorized.isChecked = wordList[position].memorized
-        // in case of fast swiping
-        try {
-            binding.cbMemorized.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.check(wordList[position].id, isChecked)
-            }
-        } catch (e: IndexOutOfBoundsException) {
-            e.printStackTrace()
+        binding.cbMemorized.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.check(wordList[position].id, isChecked)
         }
-
-
     }
 
     override fun getItemCount() = wordList.size
@@ -46,6 +39,6 @@ class WordRecycleViewAdapter(
 
     fun updateList(item: Int) {
         wordList.removeAt(item)
-        notifyDataSetChanged()
+        notifyItemRemoved(item)
     }
 }

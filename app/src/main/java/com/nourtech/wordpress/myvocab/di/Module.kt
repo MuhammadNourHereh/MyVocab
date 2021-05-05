@@ -5,6 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.nourtech.wordpress.myvocab.db.WordsDatabase
+import com.nourtech.wordpress.myvocab.firestore.FirestoreWrapper
 import com.nourtech.wordpress.myvocab.others.KEY_REALTIME_UPDATE
 import com.nourtech.wordpress.myvocab.others.SHARED_PREFERENCES_NAME
 import dagger.Module
@@ -36,12 +37,17 @@ object Module {
 
     @Singleton
     @Provides
-    fun provideSharedPreferences(@ApplicationContext app: Context) =
+    fun provideSharedPreferences(@ApplicationContext app: Context): SharedPreferences =
         app.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
 
     @Singleton
     @Provides
     fun provideRealtimeUpdateToggle(sharedPref: SharedPreferences) =
         sharedPref.getBoolean(KEY_REALTIME_UPDATE, false)
+
+    @Singleton
+    @Provides
+    fun provideFirestoreWrapper(sharedPref: SharedPreferences) = FirestoreWrapper(sharedPref)
+
 
 }
