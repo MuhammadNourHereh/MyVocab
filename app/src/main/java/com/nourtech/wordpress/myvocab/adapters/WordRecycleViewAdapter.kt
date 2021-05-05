@@ -10,7 +10,7 @@ import com.nourtech.wordpress.myvocab.db.WordEntity
 import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 
 class WordRecycleViewAdapter(
-    private var wordList: List<WordEntity>,
+    private var wordList: MutableList<WordEntity>,
     private val viewModel: MainViewModel
 ) : RecyclerView.Adapter<ViewHolder>() {
 
@@ -28,10 +28,15 @@ class WordRecycleViewAdapter(
         binding.tvLang1.text = wordList[position].lang1
         binding.tvLang2.text = wordList[position].lang2
         binding.cbMemorized.isChecked = wordList[position].memorized
-
-        binding.cbMemorized.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.check(wordList[position].id, isChecked)
+        // in case of fast swiping
+        try {
+            binding.cbMemorized.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.check(wordList[position].id, isChecked)
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            e.printStackTrace()
         }
+
 
     }
 
@@ -39,8 +44,8 @@ class WordRecycleViewAdapter(
 
     fun getItem(position: Int): WordEntity = wordList[position]
 
-    fun updateList(list: List<WordEntity>) {
-        wordList = list
+    fun updateList(item: Int) {
+        wordList.removeAt(item)
         notifyDataSetChanged()
     }
 }

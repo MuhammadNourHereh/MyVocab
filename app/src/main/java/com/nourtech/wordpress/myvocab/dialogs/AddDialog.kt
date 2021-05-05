@@ -12,11 +12,12 @@ import com.nourtech.wordpress.myvocab.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddDialog : DialogFragment() {
+open class AddDialog : DialogFragment() {
     private lateinit var binding: DialogAddBinding
 
     private val viewModel: MainViewModel by activityViewModels()
 
+    var isNewWordAdd = false
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
 
@@ -30,6 +31,7 @@ class AddDialog : DialogFragment() {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Add a new word :")
         builder.setView(binding.root)
+
 
         return builder.create()
     }
@@ -49,6 +51,7 @@ class AddDialog : DialogFragment() {
     }
 
     private fun add() {
+
         val s1 = binding.editTextFirstLanguage.text.toString()
         val s2 = binding.editTextSecondLanguage.text.toString()
 
@@ -56,6 +59,7 @@ class AddDialog : DialogFragment() {
             return
 
         viewModel.addWord(WordEntity(s1, s2))
+        isNewWordAdd = true
 
         binding.editTextFirstLanguage.text.clear()
         binding.editTextSecondLanguage.text.clear()

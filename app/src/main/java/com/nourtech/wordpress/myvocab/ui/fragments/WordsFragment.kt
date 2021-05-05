@@ -72,8 +72,6 @@ class WordsFragment : Fragment(R.layout.fragment_words) {
             val login = resources.getString(R.string.login)
             userName.postValue(login)
         }
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
